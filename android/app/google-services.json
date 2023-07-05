@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "965608981961",
+    "project_id": "quick-flashcards",
+    "storage_bucket": "quick-flashcards.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965608981961:android:e88b927e8727febd775418",
+        "android_client_info": {
+          "package_name": "com.example.quick_flashcards"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965608981961-hjf89rorkj2vse46mbd5c24fkq77jfr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZslNiZ9UVPzI207S_NnL5Ul027hly5X0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965608981961-hjf89rorkj2vse46mbd5c24fkq77jfr2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "965608981961-vuvmdojdvc87rtr498pds4m3hpighdsl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quickFlashcards"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

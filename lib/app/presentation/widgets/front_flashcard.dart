@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:quick_flashcards/data/card_model.dart';
+import 'package:quick_flashcards/app/data/card_model.dart';
 
 import 'card_content.dart';
 
-class BackFlashcard extends StatelessWidget {
+class FrontFlashcard extends StatelessWidget {
   final CardModel card;
 
-  const BackFlashcard({
+  const FrontFlashcard({
     Key? key,
     required this.card,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       decoration: BoxDecoration(
         color: card.color,
@@ -23,8 +25,8 @@ class BackFlashcard extends StatelessWidget {
         vertical: 26,
       ),
       child: CardContent(
-        title: "Answer",
-        value: card.answer,
+        title: "Question",
+        value: card.question,
         counter: '1/20',
       ),
     );

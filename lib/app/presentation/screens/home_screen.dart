@@ -2,11 +2,11 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'package:quick_flashcards/core/app_colors.dart';
-import 'package:quick_flashcards/presentation/widgets/back_flashcard.dart';
-import 'package:quick_flashcards/presentation/widgets/front_flashcard.dart';
+import 'package:quick_flashcards/app/core/theme/app_colors.dart';
+import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
+import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
 
-import '../data/data_list.dart';
+import '../../data/data_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

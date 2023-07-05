@@ -39,6 +39,12 @@ dependencies:
   swipe_cards: ^2.0.0+1
   flutter_card_swiper: ^5.1.0
   flip_card: ^0.7.0
+  firebase_core: ^2.14.0
+  flutter_riverpod: ^2.3.6
+  firebase_auth: ^4.6.3
+  cloud_firestore: ^4.8.2
+  firebase_storage: ^11.2.4
+  flutter_spinkit: ^5.2.0
 
 dev_dependencies:
   flutter_test:

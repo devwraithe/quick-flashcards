@@ -1,4 +1,4 @@
-import '../core/app_colors.dart';
+import '../core/theme/app_colors.dart';
 import 'card_model.dart';
 
 final List cards = [

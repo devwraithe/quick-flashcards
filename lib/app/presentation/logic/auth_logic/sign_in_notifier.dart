@@ -13,18 +13,24 @@ class SignInNotifier extends StateNotifier<SignInState> {
 
   SignInNotifier(this._usecase) : super(SignInState.initial);
 
-  Future<void> signIn(String email, String password) async {
+  Future<String?> signIn(String email, String password) async {
     state = SignInState.loading; // begin the loading
     try {
       await _usecase.execute(email, password); // handle the req
       state = SignInState.success; // req is successful
+      return null.toString();
     } on AuthException catch (e) {
-      debugPrint(e.message);
+      debugPrint("[CUBIT AUTH ERROR] ${e.message}");
       state = SignInState.failed;
+      return e.message;
     } on SocketException catch (e) {
+      debugPrint("[CUBIT SOCKET ERROR] ${e.message}");
       state = SignInState.failed;
+      return e.message;
     } catch (e) {
+      debugPrint("[CUBIT UNKNOWN ERROR] ${e.toString()}");
       state = SignInState.failed;
+      return e.toString();
     }
   }
 }

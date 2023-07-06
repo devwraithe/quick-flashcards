@@ -4,6 +4,8 @@ import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 
+import '../../core/constants/string_constants.dart';
+import '../../core/helpers/snackbar_helper.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
@@ -20,25 +22,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Map<String, dynamic> data = {
-    "email": "",
-    "password": "",
-  };
-
   final _key = GlobalKey<FormState>(debugLabel: 'sign_up');
 
-  _submit(notifier) {
+  _submit(context, ref) async {
     final formState = _key.currentState!;
+
+    final state = ref.watch(signUpProvider);
+    final notifier = ref.watch(signUpProvider.notifier);
+
     try {
       if (formState.validate()) {
         formState.save();
-        notifier.signUp(
+        final result = await notifier.signUp(
           _emailController.text,
           _passwordController.text,
         );
+        if (state != SignUpState.success) {
+          debugPrint('[UI AUTH ERROR] $result');
+          return AppSnackbar.error(context, result);
+        } else {
+          Navigator.pushNamed(context, Routes.home);
+        }
       }
     } catch (e) {
-      debugPrint("Something went wrong: ${e.toString()}");
+      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+      AppSnackbar.error(
+        context,
+        "${StringConstants.unknownError}: ${e.toString()}",
+      );
     }
   }
 
@@ -61,39 +72,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: "Email",
                       controller: _emailController,
                       validator: (v) => ValidatorsHelper.email(v),
-                      onSaved: (v) => data['email'] = v!,
+                      onSaved: (v) => _emailController.text = v!,
                     ),
                     const SizedBox(height: 18),
                     AppTextFieldWidget(
                       hintText: "Password",
                       controller: _passwordController,
                       validator: (v) => ValidatorsHelper.password(v),
-                      onSaved: (v) => data['password'] = v!,
+                      onSaved: (v) => _passwordController.text = v!,
                       helperText: "Note: Letters and numbers are required",
                     ),
                     const SizedBox(height: 20),
                     Consumer(
                       builder: (context, ref, _) {
-                        final signUpState = ref.watch(
-                          signUpProvider,
-                        );
-                        final signUpNotifier = ref.watch(
-                          signUpProvider.notifier,
-                        );
-
-                        // if (signUpState == SignUpState.error) {
-                        //   final error = signUpNotifier.errorMessage!;
-                        //   WidgetsBinding.instance.addPostFrameCallback((_) {
-                        //     AppSnackbar.error(
-                        //       context,
-                        //       error.message,
-                        //     );
-                        //   });
-                        // }
+                        final state = ref.watch(signUpProvider);
+                        final notifier = ref.watch(signUpProvider.notifier);
 
                         return FilledButton(
-                          onPressed: () => _submit(signUpNotifier),
-                          child: signUpState == SignUpState.loading
+                          onPressed: () => _submit(context, ref),
+                          child: state == SignUpState.loading
                               ? UiHelpers.loader()
                               : const Text("Create Account"),
                         );

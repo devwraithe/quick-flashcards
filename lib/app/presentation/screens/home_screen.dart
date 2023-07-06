@@ -2,11 +2,17 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
+import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/add_flashcard_notifier.dart';
 import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
 import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
 
+import '../../core/constants/string_constants.dart';
+import '../../core/helpers/ui_helper.dart';
+import '../../core/helpers/validators_helper.dart';
 import '../../data/data_list.dart';
+import '../widgets/app_textfield_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -68,11 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  const Icon(
-                    Icons.add,
-                    size: 24,
-                    color: AppColors.white,
-                  ),
+                  GestureDetector(
+                    onTap: () => addFlashcard(),
+                    child: const Icon(
+                      Icons.add,
+                      size: 24,
+                      color: AppColors.white,
+                    ),
+                  )
                 ],
               ),
               const SizedBox(height: 32),
@@ -166,6 +175,85 @@ class _HomeScreenState extends State<HomeScreen> {
           color: AppColors.white,
         ),
       ),
+    );
+  }
+
+  final _questionController = TextEditingController();
+  final _answerController = TextEditingController();
+
+  final _key = GlobalKey<FormState>(debugLabel: 'add_flashcard');
+
+  _addFlashcard(context, ref) async {
+    final formState = _key.currentState!;
+
+    final state = ref.watch(fcProvider);
+    final notifier = ref.watch(fcProvider.notifier);
+
+    try {
+      if (formState.validate()) {
+        formState.save();
+        final result = await notifier.signIn(
+          _questionController.text,
+          _answerController.text,
+        );
+        if (state != AddFlashcardState.success) {
+          debugPrint('[UI AUTH ERROR] $result');
+          // return AppSnackbar.error(context, result);
+        } else {
+          // Navigator.pushNamed(context, Routes.home);
+        }
+      }
+    } catch (e) {
+      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+      // AppSnackbar.error(
+      //   context,
+      //   "${StringConstants.unknownError}: ${e.toString()}",
+      // );
+    }
+  }
+
+  // dialog box to add flashcard
+  addFlashcard() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog.fullscreen(
+          child: Form(
+            key: _key,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text("Add a Flashcard"),
+                AppTextFieldWidget(
+                  hintText: "Question",
+                  controller: _questionController,
+                  validator: (v) => ValidatorsHelper.def(v),
+                  onSaved: (v) => _questionController.text = v!,
+                ),
+                AppTextFieldWidget(
+                  hintText: "Answer",
+                  controller: _answerController,
+                  validator: (v) => ValidatorsHelper.def(v),
+                  onSaved: (v) => _answerController.text = v!,
+                ),
+                const SizedBox(height: 20),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final state = ref.watch(fcProvider);
+
+                    return FilledButton(
+                      onPressed: () => _addFlashcard(context, ref),
+                      child: state == AddFlashcardState.loading
+                          ? UiHelpers.loader()
+                          : const Text("Add Flashcard"),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

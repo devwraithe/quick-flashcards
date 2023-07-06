@@ -24,6 +24,13 @@ class ValidatorsHelper {
     return null;
   }
 
+  static String? def(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This is required';
+    }
+    return null;
+  }
+
   // add trip fields
   static String? trip(String? value) {
     if (value == null || value.isEmpty) {

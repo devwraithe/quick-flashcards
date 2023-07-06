@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/routes/app_routes.dart';
-import 'package:quick_flashcards/app/presentation/screens/reset_password_screen.dart';
+import 'package:quick_flashcards/app/presentation/screens/home_screen.dart';
 import 'package:quick_flashcards/app/presentation/screens/sign_in_screen.dart';
 
 import 'core/helpers/ui_helper.dart';
@@ -27,7 +27,7 @@ class QuickFlashcards extends ConsumerWidget {
             );
           } else {
             if (snapshot.hasData && snapshot.data!) {
-              return const ResetPasswordScreen();
+              return const HomeScreen();
             } else {
               return const SignInScreen();
             }

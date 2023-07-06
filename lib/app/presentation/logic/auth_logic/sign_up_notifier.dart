@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/exceptions.dart';
@@ -12,17 +13,24 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
 
   SignUpNotifier(this._usecase) : super(SignUpState.initial);
 
-  Future<void> signUp(String email, String password) async {
+  Future<String?> signUp(String email, String password) async {
     state = SignUpState.loading; // begin the loading
     try {
       await _usecase.execute(email, password); // handle the req
       state = SignUpState.success; // req is successful
+      return null.toString();
     } on AuthException catch (e) {
+      debugPrint("[CUBIT AUTH ERROR] ${e.message}");
       state = SignUpState.failed;
+      return e.message;
     } on SocketException catch (e) {
+      debugPrint("[CUBIT SOCKET ERROR] ${e.message}");
       state = SignUpState.failed;
+      return e.message;
     } catch (e) {
+      debugPrint("[CUBIT UNKNOWN ERROR] ${e.toString()}");
       state = SignUpState.failed;
+      return e.toString();
     }
   }
 }

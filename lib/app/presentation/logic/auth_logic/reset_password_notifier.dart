@@ -1,34 +1,36 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/exceptions.dart';
-import '../../../core/errors/failure.dart';
 import '../../../domain/usecases/auth_usecases/reset_password_usecase.dart';
 
-enum ResetPasswordState { initial, loading, loaded, error }
+enum ResetPasswordState { initial, loading, success, failed }
 
 class ResetPasswordNotifier extends StateNotifier<ResetPasswordState> {
   final ResetPasswordUsecase _usecase;
 
   ResetPasswordNotifier(this._usecase) : super(ResetPasswordState.initial);
 
-  Failure? errorMessage;
-
-  Future<void> resetPassword(String email) async {
+  Future<String?> resetPassword(String email) async {
+    state = ResetPasswordState.loading;
     try {
-      state = ResetPasswordState.loading;
       await _usecase.execute(email);
-      state = ResetPasswordState.loaded;
+      state = ResetPasswordState.success;
+      return null.toString();
     } on AuthException catch (e) {
-      state = ResetPasswordState.error;
-      errorMessage = Failure(e.message);
+      debugPrint("[CUBIT AUTH ERROR] ${e.message}");
+      state = ResetPasswordState.failed;
+      return e.message;
     } on SocketException catch (e) {
-      state = ResetPasswordState.error;
-      errorMessage = Failure(e.message);
+      debugPrint("[CUBIT SOCKET ERROR] ${e.message}");
+      state = ResetPasswordState.failed;
+      return e.message;
     } catch (e) {
-      state = ResetPasswordState.error;
-      errorMessage = Failure(e.toString());
+      debugPrint("[CUBIT UNKNOWN ERROR] ${e.toString()}");
+      state = ResetPasswordState.failed;
+      return e.toString();
     }
   }
 }

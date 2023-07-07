@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
+import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/add_flashcard_notifier.dart';
+import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/get_flashcards_notifier.dart';
 import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
 import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
 
 import '../../core/constants/string_constants.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/helpers/validators_helper.dart';
-import '../../data/data_list.dart';
 import '../widgets/app_textfield_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -85,32 +86,61 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              Expanded(
-                child: CardSwiper(
-                  cardsCount: cards.length,
-                  controller: _swiperController,
-                  allowedSwipeDirection: AllowedSwipeDirection.symmetric(
-                    horizontal: true,
-                  ),
-                  numberOfCardsDisplayed: 3,
-                  scale: 0.96,
-                  backCardOffset: const Offset(14, 0),
-                  padding: const EdgeInsets.only(
-                    right: 22,
-                    left: 6,
-                  ),
-                  cardBuilder: (context, index) {
-                    final card = cards[index];
-                    return FlipCard(
-                      fill: Fill.fillBack,
-                      direction: FlipDirection.HORIZONTAL,
-                      side: CardSide.FRONT,
-                      controller: _flipController,
-                      front: FrontFlashcard(card: card),
-                      back: BackFlashcard(card: card),
-                    );
-                  },
-                ),
+              Consumer(
+                builder: (context, ref, _) {
+                  final flashcard = ref.watch(getFlashcardProv);
+
+                  print(flashcard.value);
+
+                  return flashcard.when(
+                    data: (flashcard) {
+                      return Expanded(
+                        child: CardSwiper(
+                          cardsCount: flashcard.length,
+                          controller: _swiperController,
+                          allowedSwipeDirection:
+                              AllowedSwipeDirection.symmetric(
+                            horizontal: true,
+                          ),
+                          numberOfCardsDisplayed: 3,
+                          scale: 0.96,
+                          backCardOffset: const Offset(14, 0),
+                          padding: const EdgeInsets.only(
+                            right: 22,
+                            left: 6,
+                          ),
+                          cardBuilder: (context, index) {
+                            final card = flashcard[index];
+                            return FlipCard(
+                              fill: Fill.fillBack,
+                              direction: FlipDirection.HORIZONTAL,
+                              side: CardSide.FRONT,
+                              controller: _flipController,
+                              front: FrontFlashcard(card: card!),
+                              back: BackFlashcard(card: card),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    error: (error, stackTrace) {
+                      return Text(
+                        "Something here 2",
+                        style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                    loading: () {
+                      return Text(
+                        "Something here 3",
+                        style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
               const SizedBox(height: 32),
               Row(
@@ -181,6 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _questionController = TextEditingController();
   final _answerController = TextEditingController();
 
+  String? _cardColor;
+
   final _key = GlobalKey<FormState>(debugLabel: 'add_flashcard');
 
   _addFlashcard(context, ref) async {
@@ -192,9 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       if (formState.validate()) {
         formState.save();
-        final result = await notifier.signIn(
+        final result = await notifier.addFlashcard(
           _questionController.text,
           _answerController.text,
+          _cardColor ?? AppColors.blue.toString(),
         );
         if (state != AddFlashcardState.success) {
           debugPrint('[UI AUTH ERROR] $result');
@@ -205,10 +238,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");
-      // AppSnackbar.error(
-      //   context,
-      //   "${StringConstants.unknownError}: ${e.toString()}",
-      // );
     }
   }
 
@@ -235,6 +264,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   controller: _answerController,
                   validator: (v) => ValidatorsHelper.def(v),
                   onSaved: (v) => _answerController.text = v!,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _cardColor = AppColors.green.toString();
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        color: AppColors.green,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _cardColor = AppColors.red.toString();
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        color: AppColors.red,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 Consumer(

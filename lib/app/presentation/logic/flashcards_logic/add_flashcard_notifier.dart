@@ -13,10 +13,11 @@ class AddFlashcardNotifier extends StateNotifier<AddFlashcardState> {
 
   AddFlashcardNotifier(this._usecase) : super(AddFlashcardState.initial);
 
-  Future<String?> signIn(String question, String answer) async {
+  Future<String?> addFlashcard(
+      String question, String answer, String color) async {
     state = AddFlashcardState.loading; // begin the loading
     try {
-      await _usecase.execute(question, answer); // handle the req
+      await _usecase.execute(question, answer, color); // handle the req
       state = AddFlashcardState.success; // req is successful
       return null.toString();
     } on AuthException catch (e) {

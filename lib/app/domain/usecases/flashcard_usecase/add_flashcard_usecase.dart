@@ -5,8 +5,8 @@ class AddFlashcardUsecase {
   final FlashcardRepositoryImpl _repo;
   AddFlashcardUsecase(this._repo);
 
-  Future<void> execute(String question, String answer) async {
-    return await _repo.addFlashcard(question, answer);
+  Future<void> execute(String question, String answer, String color) async {
+    return await _repo.addFlashcard(question, answer, color);
   }
 }
 

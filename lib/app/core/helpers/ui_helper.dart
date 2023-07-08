@@ -17,4 +17,11 @@ class UiHelpers {
       size: 22,
     );
   }
+
+  static List cardColors = [
+    AppColors.cardGreen,
+    AppColors.cardRed,
+    AppColors.cardBlue,
+    AppColors.cardYellow,
+  ];
 }

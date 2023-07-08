@@ -8,6 +8,7 @@ import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/add_flashcard_notifier.dart';
 import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/get_flashcards_notifier.dart';
 import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
+import 'package:quick_flashcards/app/presentation/widgets/card_color_picker.dart';
 import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
 
 import '../../core/constants/string_constants.dart';
@@ -40,8 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       backgroundColor: AppColors.black,
       body: SafeArea(
@@ -52,45 +51,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.close,
-                        size: 22,
+              // title section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Quick Flashcards",
+                      style: AppTextTheme.textTheme.headlineMedium?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => addFlashcard(),
+                      child: const Icon(
+                        Icons.add,
+                        size: 28,
                         color: AppColors.white,
                       ),
-                      const SizedBox(width: 24),
-                      Container(
-                        margin: const EdgeInsets.only(top: 0.6),
-                        child: Text(
-                          "Flashcards",
-                          style: textTheme.titleLarge?.copyWith(
-                            color: AppColors.grey,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => addFlashcard(),
-                    child: const Icon(
-                      Icons.add,
-                      size: 24,
-                      color: AppColors.white,
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 32),
               Consumer(
                 builder: (context, ref, _) {
                   final flashcard = ref.watch(getFlashcardProv);
-
-                  print(flashcard.value);
 
                   return flashcard.when(
                     data: (flashcard) {
@@ -211,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _questionController = TextEditingController();
   final _answerController = TextEditingController();
 
-  String? _cardColor;
+  String? _selectedCardColor;
 
   final _key = GlobalKey<FormState>(debugLabel: 'add_flashcard');
 
@@ -227,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final result = await notifier.addFlashcard(
           _questionController.text,
           _answerController.text,
-          _cardColor ?? AppColors.blue.toString(),
+          _selectedCardColor ?? AppColors.cardGreen.toString(),
         );
         if (state != AddFlashcardState.success) {
           debugPrint('[UI AUTH ERROR] $result');
@@ -267,27 +255,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        _cardColor = AppColors.green.toString();
-                      },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        color: AppColors.green,
+                    for (final cardColor in UiHelpers.cardColors)
+                      CardColorPicker(
+                        onTap: () {
+                          _selectedCardColor = cardColor.toString();
+                        },
+                        cardColor: cardColor,
+                        borderColor: _selectedCardColor == cardColor.toString()
+                            ? Colors.black45
+                            : Colors.transparent,
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _cardColor = AppColors.red.toString();
-                      },
-                      child: Container(
-                        width: 30,
-                        height: 30,
-                        color: AppColors.red,
-                      ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 20),

@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // title section
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 36),
               Consumer(
                 builder: (context, ref, _) {
                   final flashcard = ref.watch(getFlashcardProv);
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 36),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

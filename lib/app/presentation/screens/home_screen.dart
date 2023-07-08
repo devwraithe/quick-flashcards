@@ -120,10 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     loading: () {
-                      return Text(
-                        "Something here 3",
-                        style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
+                      return Expanded(
+                        child: Center(
+                          child: UiHelpers.loader(),
                         ),
                       );
                     },

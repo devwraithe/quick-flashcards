@@ -112,10 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     error: (error, stackTrace) {
-                      return Text(
-                        "Something here 2",
-                        style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
+                      return Expanded(
+                        child: Center(
+                          child: Text(
+                            "Something went wrong: $error",
+                            style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       );
                     },

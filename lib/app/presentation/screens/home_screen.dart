@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/get_flashcards_notifier.dart';
+import 'package:quick_flashcards/app/presentation/screens/add_flashcard_screen.dart';
 import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
@@ -62,7 +63,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     GestureDetector(
-                      // onTap: () => addFlashcard(), // navigate to the add_flashcard screen
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const AddFlashcardScreen();
+                          },
+                        ),
+                      ), // navigate to the add_flashcard screen
                       child: const Icon(
                         Icons.add,
                         size: 28,

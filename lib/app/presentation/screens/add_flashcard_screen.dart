@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_flashcards/app/presentation/screens/home_screen.dart';
 
+import '../../core/constants/string_constants.dart';
+import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
+import '../logic/flashcards_logic/add_flashcard_notifier.dart';
+import '../widgets/card_color_picker.dart';
 import '../widgets/flashcard_text_field.dart';
 
 class AddFlashcardScreen extends StatefulWidget {
@@ -12,15 +18,50 @@ class AddFlashcardScreen extends StatefulWidget {
 }
 
 class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
+  Color? selectedColor;
+  String? _selectedCardColor;
+
+  final _questionController = TextEditingController();
+  final _answerController = TextEditingController();
+
+  _addFlashcard(context, ref) async {
+    final state = ref.watch(fcProvider);
+    final notifier = ref.watch(fcProvider.notifier);
+
+    try {
+      final result = await notifier.addFlashcard(
+        _questionController.text,
+        _answerController.text,
+        _selectedCardColor ?? AppColors.cardGreen.toString(),
+      );
+      if (state != AddFlashcardState.success) {
+        debugPrint('[UI AUTH ERROR] $result');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (ctx) {
+              return const HomeScreen();
+            },
+          ),
+        );
+        // return AppSnackbar.error(context, result);
+      } else {
+        // Navigator.pushNamed(context, Routes.home);
+      }
+    } catch (e) {
+      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: selectedColor ?? AppColors.black,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: 26,
-            horizontal: 16,
+            horizontal: 20,
           ),
           child: Column(
             children: [
@@ -30,121 +71,64 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                 children: [
                   Text(
                     "Back",
-                    style: AppTextTheme.textTheme.headlineMedium?.copyWith(
+                    style: AppTextTheme.textTheme.bodyLarge?.copyWith(
                       color: AppColors.white,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    "Save",
-                    style: AppTextTheme.textTheme.headlineMedium?.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final state = ref.watch(fcProvider);
+
+                      return GestureDetector(
+                        onTap: () => _addFlashcard(context, ref),
+                        child: state == AddFlashcardState.loading
+                            ? UiHelpers.loader()
+                            : Text(
+                                "Save",
+                                style:
+                                    AppTextTheme.textTheme.bodyLarge?.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                      );
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 52),
-              const FlashcardTextField(label: "Question"),
-              const FlashcardTextField(label: "Answer"),
+              const SizedBox(height: 62),
+              FlashcardTextField(
+                label: "Question",
+                hint: "Who was the first human being to visit space?",
+                controller: _questionController,
+              ),
+              FlashcardTextField(
+                label: "Answer",
+                hint: "Yuri Gagarin",
+                controller: _answerController,
+              ),
+              const SizedBox(height: 62),
+              Row(
+                children: [
+                  for (final cardColor in UiHelpers.cardColors)
+                    selectedColor == cardColor
+                        ? const SizedBox()
+                        : CardColorPicker(
+                            onTap: () {
+                              setState(() {
+                                selectedColor = cardColor;
+                              });
+                              _selectedCardColor = cardColor.toString();
+                            },
+                            cardColor: cardColor,
+                          ),
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
-  // dialog box to add flashcard
-  // addFlashcard() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Dialog.fullscreen(
-  //         child: Form(
-  //           key: _key,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             children: [
-  //               const Text("Add a Flashcard"),
-  //               AppTextFieldWidget(
-  //                 hintText: "Question",
-  //                 controller: _questionController,
-  //                 validator: (v) => ValidatorsHelper.def(v),
-  //                 onSaved: (v) => _questionController.text = v!,
-  //               ),
-  //               AppTextFieldWidget(
-  //                 hintText: "Answer",
-  //                 controller: _answerController,
-  //                 validator: (v) => ValidatorsHelper.def(v),
-  //                 onSaved: (v) => _answerController.text = v!,
-  //               ),
-  //               const SizedBox(height: 20),
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   for (final cardColor in UiHelpers.cardColors)
-  //                     CardColorPicker(
-  //                       onTap: () {
-  //                         _selectedCardColor = cardColor.toString();
-  //                       },
-  //                       cardColor: cardColor,
-  //                       borderColor: _selectedCardColor == cardColor.toString()
-  //                           ? Colors.black45
-  //                           : Colors.transparent,
-  //                     ),
-  //                 ],
-  //               ),
-  //               const SizedBox(height: 20),
-  //               Consumer(
-  //                 builder: (context, ref, _) {
-  //                   final state = ref.watch(fcProvider);
-  //
-  //                   return FilledButton(
-  //                     onPressed: () => _addFlashcard(context, ref),
-  //                     child: state == AddFlashcardState.loading
-  //                         ? UiHelpers.loader()
-  //                         : const Text("Add Flashcard"),
-  //                   );
-  //                 },
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // final _questionController = TextEditingController();
-  // final _answerController = TextEditingController();
-  //
-  // String? _selectedCardColor;
-  //
-  // final _key = GlobalKey<FormState>(debugLabel: 'add_flashcard');
-  //
-  // _addFlashcard(context, ref) async {
-  //   final formState = _key.currentState!;
-  //
-  //   final state = ref.watch(fcProvider);
-  //   final notifier = ref.watch(fcProvider.notifier);
-  //
-  //   try {
-  //     if (formState.validate()) {
-  //       formState.save();
-  //       final result = await notifier.addFlashcard(
-  //         _questionController.text,
-  //         _answerController.text,
-  //         _selectedCardColor ?? AppColors.cardGreen.toString(),
-  //       );
-  //       if (state != AddFlashcardState.success) {
-  //         debugPrint('[UI AUTH ERROR] $result');
-  //         // return AppSnackbar.error(context, result);
-  //       } else {
-  //         // Navigator.pushNamed(context, Routes.home);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     debugPrint("${StringConstants.unknownError}: ${e.toString()}");
-  //   }
-  // }
 }

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/text_theme.dart';
+import '../widgets/flashcard_text_field.dart';
+
 class AddFlashcardScreen extends StatefulWidget {
   const AddFlashcardScreen({super.key});
 
@@ -10,7 +14,44 @@ class AddFlashcardScreen extends StatefulWidget {
 class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      backgroundColor: AppColors.black,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 26,
+            horizontal: 16,
+          ),
+          child: Column(
+            children: [
+              // title section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Back",
+                    style: AppTextTheme.textTheme.headlineMedium?.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    "Save",
+                    style: AppTextTheme.textTheme.headlineMedium?.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 52),
+              const FlashcardTextField(label: "Question"),
+              const FlashcardTextField(label: "Answer"),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   // dialog box to add flashcard

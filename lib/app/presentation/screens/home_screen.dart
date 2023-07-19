@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const AddFlashcardScreen();
+                            return AddFlashcardScreen();
                           },
                         ),
                       ), // navigate to the add_flashcard screen
@@ -105,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           cardBuilder: (context, index) {
                             final card = flashcard[index];
+
                             return FlipCard(
                               fill: Fill.fillBack,
                               direction: FlipDirection.HORIZONTAL,

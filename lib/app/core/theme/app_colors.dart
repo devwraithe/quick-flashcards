@@ -10,8 +10,8 @@ class AppColors {
   static const Color green = Color(0XFF00FF00);
 
   // variants for flashcard background
-  static const Color cardGreen = Color(0XFF2AA95B);
-  static const Color cardRed = Color(0XFFC64961);
-  static const Color cardBlue = Color(0XFF2264A0);
-  static const Color cardYellow = Color(0XFFEA9D25);
+  static const Color cardGreen = Color(0xFF2AA95B);
+  static const Color cardRed = Color(0xFFC64961);
+  static const Color cardBlue = Color(0xFF2264A0);
+  static const Color cardYellow = Color(0xFFEA9D25);
 }

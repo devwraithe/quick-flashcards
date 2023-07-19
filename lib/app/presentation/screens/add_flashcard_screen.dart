@@ -44,35 +44,15 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
 
     try {
       final cardColor = widget.cardModel?.color;
-      print("prev card color: $cardColor");
       final result = await notifier.addFlashcard(
         _questionController.text,
         _answerController.text,
         randomItem.toString(),
-        // _selectedCardColor ?? AppColors.cardGreen.toString(),
-        // cardColor == AppColors.cardGreen
-        //     ? AppColors.cardRed.toString()
-        //     : cardColor == AppColors.cardRed
-        //         ? AppColors.cardBlue.toString()
-        //         : cardColor == AppColors.cardBlue
-        //             ? AppColors.cardYellow.toString()
-        //             : AppColors.cardGreen.toString(),
       );
       if (state != AddFlashcardState.success) {
-        // debugPrint('[UI AUTH ERROR] $state');
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (ctx) {
-        //       return const HomeScreen();
-        //     },
-        //   ),
-        // );
         print("can't add flashcard - ${result}");
-        // return AppSnackbar.error(context, result);
       } else {
         print("flashcard added - $result");
-        // Navigator.pushNamed(context, Routes.home);
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");
@@ -81,8 +61,6 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("card model - ${widget.cardModel}");
-
     return Scaffold(
       backgroundColor: AppColors.black,
       body: SafeArea(
@@ -137,22 +115,6 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                 controller: _answerController,
               ),
               const SizedBox(height: 62),
-              // Row(
-              //   children: [
-              //     for (final cardColor in UiHelpers.cardColors)
-              //       selectedColor == cardColor
-              //           ? const SizedBox()
-              //           : CardColorPicker(
-              //               onTap: () {
-              //                 setState(() {
-              //                   selectedColor = cardColor;
-              //                 });
-              //                 _selectedCardColor = cardColor.toString();
-              //               },
-              //               cardColor: cardColor,
-              //             ),
-              //   ],
-              // ),
             ],
           ),
         ),

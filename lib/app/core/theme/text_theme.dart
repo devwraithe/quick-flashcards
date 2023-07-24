@@ -38,17 +38,17 @@ class AppTextTheme {
     // subtitles
     titleLarge: TextStyle(
       fontSize: 16,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     titleMedium: TextStyle(
       fontSize: 14,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     bodyLarge: TextStyle(
       fontSize: 16,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w400,
     ),
     bodyMedium: TextStyle(

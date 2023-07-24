@@ -1,7 +1,10 @@
 import 'dart:math';
 
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/data/card_model.dart';
 
 import '../../core/constants/string_constants.dart';
@@ -43,16 +46,22 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
     Color randomItem = colors[randomColor];
 
     try {
-      final cardColor = widget.cardModel?.color;
       final result = await notifier.addFlashcard(
         _questionController.text,
         _answerController.text,
         randomItem.toString(),
       );
-      if (state != AddFlashcardState.success) {
-        print("can't add flashcard - ${result}");
+      if (result != "flashcard_created") {
+        debugPrint("Unable to Add Flashcard: ${state.toString()}");
+        showFlushbar(
+          context: context,
+          flushbar: Flushbar(
+            title: "Unable to Add Flashcard",
+          ),
+        );
       } else {
-        print("flashcard added - $result");
+        debugPrint("Flashcard Added!");
+        Navigator.pushNamed(context, Routes.home);
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");

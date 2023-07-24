@@ -1,25 +1,35 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/presentation/screens/home_screen.dart';
+import 'package:quick_flashcards/app/data/card_model.dart';
 
 import '../../core/constants/string_constants.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
 import '../logic/flashcards_logic/add_flashcard_notifier.dart';
-import '../widgets/card_color_picker.dart';
 import '../widgets/flashcard_text_field.dart';
 
 class AddFlashcardScreen extends StatefulWidget {
-  const AddFlashcardScreen({super.key});
+  final CardModel? cardModel;
+  const AddFlashcardScreen({
+    super.key,
+    this.cardModel,
+  });
 
   @override
   State<AddFlashcardScreen> createState() => _AddFlashcardScreenState();
 }
 
 class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
-  Color? selectedColor;
-  String? _selectedCardColor;
+  final colors = [
+    AppColors.cardGreen,
+    AppColors.cardRed,
+    AppColors.cardBlue,
+    AppColors.cardYellow,
+  ];
+  Random random = Random();
 
   final _questionController = TextEditingController();
   final _answerController = TextEditingController();
@@ -28,25 +38,21 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
     final state = ref.watch(fcProvider);
     final notifier = ref.watch(fcProvider.notifier);
 
+    int randomColor = random.nextInt(colors.length);
+
+    Color randomItem = colors[randomColor];
+
     try {
+      final cardColor = widget.cardModel?.color;
       final result = await notifier.addFlashcard(
         _questionController.text,
         _answerController.text,
-        _selectedCardColor ?? AppColors.cardGreen.toString(),
+        randomItem.toString(),
       );
       if (state != AddFlashcardState.success) {
-        debugPrint('[UI AUTH ERROR] $result');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (ctx) {
-              return const HomeScreen();
-            },
-          ),
-        );
-        // return AppSnackbar.error(context, result);
+        print("can't add flashcard - ${result}");
       } else {
-        // Navigator.pushNamed(context, Routes.home);
+        print("flashcard added - $result");
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");
@@ -56,7 +62,7 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: selectedColor ?? AppColors.black,
+      backgroundColor: AppColors.black,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -109,22 +115,6 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                 controller: _answerController,
               ),
               const SizedBox(height: 62),
-              Row(
-                children: [
-                  for (final cardColor in UiHelpers.cardColors)
-                    selectedColor == cardColor
-                        ? const SizedBox()
-                        : CardColorPicker(
-                            onTap: () {
-                              setState(() {
-                                selectedColor = cardColor;
-                              });
-                              _selectedCardColor = cardColor.toString();
-                            },
-                            cardColor: cardColor,
-                          ),
-                ],
-              ),
             ],
           ),
         ),

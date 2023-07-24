@@ -62,4 +62,5 @@ $ flutter run
 If there are suggestions on how this project can be improved and you are interested in contributing, whether bug fixes or new features, please feel free to submit a pull request or create an issue.
 
 ## 🔒 License
+
 This project is licensed under the MIT License - see the LICENSE file for details.

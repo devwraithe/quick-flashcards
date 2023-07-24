@@ -49,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             children: [
-              // title section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
@@ -88,33 +87,59 @@ class _HomeScreenState extends State<HomeScreen> {
                   return flashcard.when(
                     data: (flashcard) {
                       return Expanded(
-                        child: CardSwiper(
-                          cardsCount: flashcard.length,
-                          controller: _swiperController,
-                          allowedSwipeDirection:
-                              AllowedSwipeDirection.symmetric(
-                            horizontal: true,
-                            vertical: true,
-                          ),
-                          numberOfCardsDisplayed: 3,
-                          scale: 0.96,
-                          backCardOffset: const Offset(14, 0),
-                          padding: const EdgeInsets.only(
-                            right: 22,
-                            left: 6,
-                          ),
-                          cardBuilder: (context, index) {
-                            final card = flashcard[index];
-                            return FlipCard(
-                              fill: Fill.fillBack,
-                              direction: FlipDirection.HORIZONTAL,
-                              side: CardSide.FRONT,
-                              controller: _flipController,
-                              front: FrontFlashcard(card: card!),
-                              back: BackFlashcard(card: card),
-                            );
-                          },
-                        ),
+                        child: flashcard.isEmpty
+                            ? Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Click the ",
+                                      style: AppTextTheme.textTheme.bodyLarge,
+                                    ),
+                                    const Icon(
+                                      Icons.add,
+                                      size: 20,
+                                      color: AppColors.white,
+                                    ),
+                                    Text(
+                                      " to create a card",
+                                      style: AppTextTheme.textTheme.bodyLarge,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : CardSwiper(
+                                cardsCount: flashcard.length,
+                                controller: _swiperController,
+                                allowedSwipeDirection:
+                                    AllowedSwipeDirection.symmetric(
+                                  horizontal: true,
+                                  vertical: true,
+                                ),
+                                numberOfCardsDisplayed: flashcard.length == 1
+                                    ? 1
+                                    : flashcard.length == 2
+                                        ? 2
+                                        : 3,
+                                scale: 0.96,
+                                backCardOffset: const Offset(14, 0),
+                                padding: const EdgeInsets.only(
+                                  right: 22,
+                                  left: 6,
+                                ),
+                                cardBuilder: (context, index) {
+                                  final card = flashcard[index];
+
+                                  return FlipCard(
+                                    fill: Fill.fillBack,
+                                    direction: FlipDirection.HORIZONTAL,
+                                    side: CardSide.FRONT,
+                                    controller: _flipController,
+                                    front: FrontFlashcard(card: card!),
+                                    back: BackFlashcard(card: card),
+                                  );
+                                },
+                              ),
                       );
                     },
                     error: (error, stackTrace) {

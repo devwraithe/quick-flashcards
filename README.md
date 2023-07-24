@@ -1,6 +1,6 @@
 # 📑 Quick Flashcards
 
-**Quick Flashcards** is a mobile application that helps users study and memorize information effectively using digital flashcards. It provides a user-friendly interface for creating, organizing, and studying flashcards on various topics.
+**Quick Flashcards** is a mobile application that helps users study and memorize information effectively using digital flashcards. It provides a user-friendly interface for creating, organizing, and studying flashcards on various topics. 
 
 Star :star2: the repo if you like what you see :wink:
 <br/><br/>
@@ -62,4 +62,5 @@ $ flutter run
 If there are suggestions on how this project can be improved and you are interested in contributing, whether bug fixes or new features, please feel free to submit a pull request or create an issue.
 
 ## 🔒 License
+
 This project is licensed under the MIT License - see the LICENSE file for details.

@@ -20,7 +20,7 @@ Before you embark on this journey, make sure you are equipped with:
 
 This guide will help you get up and running with the application so you can start creating and studying flashcards in no time
 
-### 📥 Installation
+### Installation
 
 **1. Clone the Repository:** Open your terminal and clone the "Quick Flashcards" repository to your local machine:
 

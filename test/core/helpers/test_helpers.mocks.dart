@@ -7,7 +7,7 @@ import 'dart:async' as _i4;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/add_flashcard_notifier.dart'
+import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/add_flashcard_notifier.dart'
     as _i2;
 import 'package:state_notifier/state_notifier.dart' as _i5;
 

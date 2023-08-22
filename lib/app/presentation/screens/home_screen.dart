@@ -3,24 +3,25 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
-import 'package:quick_flashcards/app/presentation/logic/flashcards_logic/get_flashcards_notifier.dart';
+import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_provider.dart';
 import 'package:quick_flashcards/app/presentation/screens/add_flashcard_screen.dart';
-import 'package:quick_flashcards/app/presentation/widgets/back_flashcard.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
-import 'package:quick_flashcards/app/presentation/widgets/front_flashcard.dart';
 
 import '../../core/helpers/ui_helper.dart';
+import '../widgets/back_flashcard.dart';
 import '../widgets/custom_icon.dart';
+import '../widgets/front_flashcard.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends ConsumerState<HomeScreen> {
   late CardSwiperController _swiperController;
   late FlipCardController _flipController;
 
@@ -82,85 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 34),
               Consumer(
                 builder: (context, ref, _) {
-                  final flashcard = ref.watch(getFlashcardProv);
+                  final state = ref.watch(getFlashcardsProvider);
+                  final notifier = ref.read(getFlashcardsProvider.notifier);
 
-                  return flashcard.when(
-                    data: (flashcard) {
-                      return Expanded(
-                        child: flashcard.isEmpty
-                            ? Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Click the ",
-                                      style: AppTextTheme.textTheme.bodyLarge,
-                                    ),
-                                    const Icon(
-                                      Icons.add,
-                                      size: 20,
-                                      color: AppColors.white,
-                                    ),
-                                    Text(
-                                      " to create a card",
-                                      style: AppTextTheme.textTheme.bodyLarge,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : CardSwiper(
-                                cardsCount: flashcard.length,
-                                controller: _swiperController,
-                                allowedSwipeDirection:
-                                    AllowedSwipeDirection.symmetric(
-                                  horizontal: true,
-                                  vertical: true,
-                                ),
-                                numberOfCardsDisplayed: flashcard.length == 1
-                                    ? 1
-                                    : flashcard.length == 2
-                                        ? 2
-                                        : 3,
-                                scale: 0.96,
-                                backCardOffset: const Offset(14, 0),
-                                padding: const EdgeInsets.only(
-                                  right: 22,
-                                  left: 6,
-                                ),
-                                cardBuilder: (context, index) {
-                                  final card = flashcard[index];
+                  print("current state: $state");
 
-                                  return FlipCard(
-                                    fill: Fill.fillBack,
-                                    direction: FlipDirection.HORIZONTAL,
-                                    side: CardSide.FRONT,
-                                    controller: _flipController,
-                                    front: FrontFlashcard(card: card!),
-                                    back: BackFlashcard(card: card),
-                                  );
-                                },
-                              ),
-                      );
-                    },
-                    error: (error, stackTrace) {
-                      return Expanded(
-                        child: Center(
-                          child: Text(
-                            "Something went wrong: $error",
-                            style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    loading: () {
-                      return Expanded(
-                        child: Center(
-                          child: UiHelpers.loader(),
-                        ),
-                      );
-                    },
+                  return Expanded(
+                    child: handleFlashcards(
+                      state,
+                      notifier,
+                    ),
                   );
                 },
               ),
@@ -197,5 +129,80 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Widget handleFlashcards(
+    GetFlashcardsState state,
+    GetFlashcardsNotifier notifier,
+  ) {
+    if (state == GetFlashcardsState.loading) {
+      return Center(
+        child: UiHelpers.loader(),
+      );
+    } else if (state == GetFlashcardsState.failed) {
+      if (notifier.error == StringConstants.emptyFlashcardsList) {
+        return Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Click the ",
+                style: AppTextTheme.textTheme.bodyLarge,
+              ),
+              const Icon(
+                Icons.add,
+                size: 20,
+                color: AppColors.white,
+              ),
+              Text(
+                " to add a card",
+                style: AppTextTheme.textTheme.bodyLarge,
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Center(
+          child: Text(
+            "Failed",
+            style: AppTextTheme.textTheme.bodyLarge,
+          ),
+        );
+      }
+    } else if (state == GetFlashcardsState.loaded) {
+      return CardSwiper(
+        cardsCount: notifier.flashcardsList!.length,
+        controller: _swiperController,
+        allowedSwipeDirection: AllowedSwipeDirection.symmetric(
+          horizontal: true,
+          vertical: true,
+        ),
+        numberOfCardsDisplayed: notifier.flashcardsList!.length == 1
+            ? 1
+            : notifier.flashcardsList!.length == 2
+                ? 2
+                : 3,
+        scale: 0.96,
+        backCardOffset: const Offset(14, 0),
+        padding: const EdgeInsets.only(
+          right: 22,
+          left: 6,
+        ),
+        cardBuilder: (context, index) {
+          final card = notifier.flashcardsList![index];
+
+          return FlipCard(
+            fill: Fill.fillBack,
+            direction: FlipDirection.HORIZONTAL,
+            side: CardSide.FRONT,
+            controller: _flipController,
+            front: FrontFlashcard(card: card),
+            back: BackFlashcard(card: card),
+          );
+        },
+      );
+    } else {
+      return const Text("Something went wrong");
+    }
   }
 }

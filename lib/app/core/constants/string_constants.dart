@@ -3,4 +3,6 @@ class StringConstants {
   static String unknownError = "Something went wrong";
   static String fontFamily = 'Gilroy';
   static String passwordResetSuccess = 'Please check your inbox for a mail';
+
+  static String emptyFlashcardsList = "No flashcards added yet!";
 }

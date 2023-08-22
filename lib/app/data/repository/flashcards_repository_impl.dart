@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/constants/firebase_constants.dart';
@@ -8,6 +11,7 @@ import 'package:quick_flashcards/app/domain/repositories/flashcard_repository.da
 
 import '../../core/constants/string_constants.dart';
 import '../../core/errors/exceptions.dart';
+import '../../core/errors/failure.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   @override
@@ -39,27 +43,42 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   }
 
   @override
-  Future<List<CardModel>> getFlashcards() async {
+  Future<Either<Failure, List<CardModel>>> getFlashcards() async {
     try {
       final user = FirebaseConstants.firebaseAuth.currentUser;
       final querySnapshot = await FirebaseConstants.firestore
           .collection('flashcards')
           .where('user', isEqualTo: user!.uid)
           .get();
-      final flashcards = querySnapshot.docs.map((flashcard) {
-        return CardModel.fromSnapshot(flashcard);
-      }).toList();
-      return flashcards;
-    } on SocketException catch (e) {
+      if (querySnapshot.docs.isNotEmpty) {
+        debugPrint("[QUERY DATA SNAPSHOT] ${querySnapshot.docs.first.data()}");
+        final flashcardsList = querySnapshot.docs.map((flashcard) {
+          return CardModel.fromSnapshot(flashcard);
+        }).toList();
+        debugPrint("[PARSE IN MODEL] ${flashcardsList.length}");
+        return Right(flashcardsList);
+      } else {
+        return Left(
+          Failure(
+            StringConstants.emptyFlashcardsList,
+          ),
+        );
+      }
+    } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
+    } on FirebaseAuthException catch (e) {
+      debugPrint("[AUTH EXCEPTION] $e");
+      throw ServerException(e.toString());
+    } on FirebaseException catch (e) {
+      debugPrint("[FIREBASE EXCEPTION] $e");
+      throw ServerException(e.toString());
     } catch (e) {
       debugPrint("Something went wrong: $e");
-      return [];
+      throw ServerException(e.toString());
     }
   }
 }
 
-// repo impl provider
-final fcRepoProvider = Provider<FlashcardRepositoryImpl>(
+final flashcardRepoProvider = Provider<FlashcardRepository>(
   (ref) => FlashcardRepositoryImpl(),
 );

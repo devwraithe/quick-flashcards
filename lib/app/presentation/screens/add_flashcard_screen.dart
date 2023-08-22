@@ -11,7 +11,7 @@ import '../../core/constants/string_constants.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
-import '../logic/flashcards_logic/add_flashcard_notifier.dart';
+import '../providers/flashcards_logic/add_flashcard_notifier.dart';
 import '../widgets/flashcard_text_field.dart';
 
 class AddFlashcardScreen extends StatefulWidget {
@@ -61,7 +61,7 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
         );
       } else {
         debugPrint("Flashcard Added!");
-        Navigator.pushNamed(context, Routes.home);
+        Navigator.pop(context, Routes.home);
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");

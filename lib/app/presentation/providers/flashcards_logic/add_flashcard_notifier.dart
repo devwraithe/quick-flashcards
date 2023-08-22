@@ -5,12 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/domain/usecases/flashcard_usecase/add_flashcard_usecase.dart';
 
 import '../../../core/errors/exceptions.dart';
+import 'get_flashcards_provider.dart';
 
 enum AddFlashcardState { initial, loading, success, failed }
 
 class AddFlashcardNotifier extends StateNotifier<AddFlashcardState> {
   final AddFlashcardUsecase _usecase;
-  AddFlashcardNotifier(this._usecase) : super(AddFlashcardState.initial);
+  final GetFlashcardsNotifier _getFlashcardNotifier;
+
+  AddFlashcardNotifier(
+    this._usecase,
+    this._getFlashcardNotifier,
+  ) : super(AddFlashcardState.initial);
 
   Future<String?> addFlashcard(
     String question,
@@ -21,6 +27,7 @@ class AddFlashcardNotifier extends StateNotifier<AddFlashcardState> {
     try {
       await _usecase.execute(question, answer, color); // handle the req
       state = AddFlashcardState.success; // req is successful
+      _getFlashcardNotifier.triggerRefresh(); // trigger refresh
       return "flashcard_created";
     } on AuthException catch (e) {
       debugPrint("[CUBIT AUTH ERROR] ${e.message}");
@@ -43,5 +50,6 @@ final fcProvider =
     StateNotifierProvider<AddFlashcardNotifier, AddFlashcardState>(
   (ref) => AddFlashcardNotifier(
     ref.watch(fcUsecase),
+    ref.watch(getFlashcardsProvider.notifier),
   ),
 );

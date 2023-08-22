@@ -84,11 +84,14 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Back",
-                    style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Text(
+                      "Back",
+                      style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                   Consumer(

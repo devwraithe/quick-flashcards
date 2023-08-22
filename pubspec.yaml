@@ -49,6 +49,8 @@ dependencies:
   mockito: ^5.4.2
   build_runner: ^2.4.6
   firebase_core_platform_interface: ^4.8.0
+  equatable: ^2.0.5
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

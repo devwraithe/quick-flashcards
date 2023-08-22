@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
-import 'package:quick_flashcards/app/presentation/logic/auth_logic/sign_in_notifier.dart';
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 
 import '../../core/helpers/snackbar_helper.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
+import '../providers/auth_logic/sign_in_notifier.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});

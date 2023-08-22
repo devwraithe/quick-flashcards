@@ -9,7 +9,7 @@ import '../../core/helpers/snackbar_helper.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
-import '../logic/auth_logic/sign_up_notifier.dart';
+import '../providers/auth_logic/sign_up_notifier.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

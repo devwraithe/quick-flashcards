@@ -1,6 +1,6 @@
 # 📑 Quick Flashcards
 
-**Quick Flashcards** is a cross-platform mobile application designed to simplify and enhance the process of learning through flashcards. By offering an efficient platform for creating and studying digital flashcards, it addresses the need for effective knowledge retention and quick review. With this application, users can easily create decks of flashcards on various subjects, enabling them to streamline their learning and reinforce key concepts effortlessly.
+**Quick Flashcards** is a cross-platform mobile application designed to simplify and enhance the process of learning through flashcards. By offering an efficient platform for creating and studying digital flashcards, it addresses the need for effective knowledge retention and quick review. With this application, users can easily create decks of flashcards on various topics, enabling them to streamline their learning and reinforce key concepts effortlessly.
 
 Star :star2: the repo if you like what you see
 <br/><br/>

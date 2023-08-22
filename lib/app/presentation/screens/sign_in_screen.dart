@@ -71,14 +71,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     AppTextFieldWidget(
                       hintText: "Email",
                       controller: _emailController,
-                      validator: (v) => ValidatorsHelper.email(v),
+                      validator: (v) => ValidatorHelper.email(v),
                       onSaved: (v) => _emailController.text = v!,
                     ),
                     const SizedBox(height: 18),
                     AppTextFieldWidget(
                       hintText: "Password",
                       controller: _passwordController,
-                      validator: (v) => ValidatorsHelper.password(v),
+                      validator: (v) => ValidatorHelper.password(v),
                       onSaved: (v) => _passwordController.text = v!,
                       helperText: "Note: Letters and numbers are required",
                     ),

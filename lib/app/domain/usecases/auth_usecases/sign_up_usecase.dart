@@ -1,20 +1,26 @@
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_flashcards/app/core/errors/failure.dart';
 
 import '../../../data/repository/auth_repository_impl.dart';
+import '../../repositories/auth_repository.dart';
 
-class SignUpUsecase {
-  final AuthRepositoryImpl _repo;
-  SignUpUsecase(this._repo);
+class CreateAccountUsecase {
+  final AuthRepository _repository;
+  CreateAccountUsecase(this._repository);
 
-  Future<User?> execute(String email, String password) async {
-    return await _repo.signUp(email, password);
+  Future<Either<Failure, User?>> execute(Map<String, dynamic> data) async {
+    final response = await _repository.createAccountRepo(data);
+    return response.fold(
+      (failure) => Left(failure),
+      (user) => Right(user),
+    );
   }
 }
 
-// usecase provider
-final signUpUsecase = Provider<SignUpUsecase>(
-  (ref) => SignUpUsecase(
+final createAccountUsecaseProvider = Provider<CreateAccountUsecase>(
+  (ref) => CreateAccountUsecase(
     ref.watch(authRepoProvider),
   ),
 );

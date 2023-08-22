@@ -1,4 +1,4 @@
-class ValidatorsHelper {
+class ValidatorHelper {
   static bool _isEmailValid(String email) {
     final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     return emailRegex.hasMatch(email);
@@ -20,21 +20,6 @@ class ValidatorsHelper {
     }
     if (password.length < 6) {
       return 'Password must be 6 characters';
-    }
-    return null;
-  }
-
-  static String? def(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This is required';
-    }
-    return null;
-  }
-
-  // add trip fields
-  static String? trip(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This field is required';
     }
     return null;
   }

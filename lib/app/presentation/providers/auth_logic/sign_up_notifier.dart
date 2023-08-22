@@ -1,43 +1,48 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/errors/exceptions.dart';
 import '../../../domain/usecases/auth_usecases/sign_up_usecase.dart';
 
-enum SignUpState { initial, loading, success, failed }
+enum CreateAccountState { initial, loading, success, failed }
 
-class SignUpNotifier extends StateNotifier<SignUpState> {
-  final SignUpUsecase _usecase;
+class CreateAccountNotifier extends StateNotifier<CreateAccountState> {
+  final CreateAccountUsecase _createAccountUsecase;
 
-  SignUpNotifier(this._usecase) : super(SignUpState.initial);
+  CreateAccountNotifier(this._createAccountUsecase)
+      : super(CreateAccountState.initial);
 
-  Future<String?> signUp(String email, String password) async {
-    state = SignUpState.loading; // begin the loading
+  String? errorMessage;
+  User? userResponse;
+
+  Future<CreateAccountState> createAccount(Map<String, dynamic> data) async {
+    state = CreateAccountState.loading;
     try {
-      await _usecase.execute(email, password); // handle the req
-      state = SignUpState.success; // req is successful
-      return null.toString();
-    } on AuthException catch (e) {
-      debugPrint("[CUBIT AUTH ERROR] ${e.message}");
-      state = SignUpState.failed;
-      return e.message;
-    } on SocketException catch (e) {
-      debugPrint("[CUBIT SOCKET ERROR] ${e.message}");
-      state = SignUpState.failed;
-      return e.message;
+      final result = await _createAccountUsecase.execute(data);
+      result.fold((failure) {
+        state = CreateAccountState.failed;
+        errorMessage = failure.message;
+        return state;
+      }, (user) {
+        state = CreateAccountState.success;
+        userResponse = user;
+        return state;
+      });
+      return state;
     } catch (e) {
-      debugPrint("[CUBIT UNKNOWN ERROR] ${e.toString()}");
-      state = SignUpState.failed;
-      return e.toString();
+      state = CreateAccountState.failed;
+      errorMessage = e.toString();
+      return state;
     }
   }
 }
 
-// notifier provider
-final signUpProvider = StateNotifierProvider<SignUpNotifier, SignUpState>(
-  (ref) => SignUpNotifier(
-    ref.watch(signUpUsecase),
-  ),
+final createAccountProvider = StateNotifierProvider.family<
+    CreateAccountNotifier, CreateAccountState, Map<String, dynamic>>(
+  (ref, data) {
+    final notifier = CreateAccountNotifier(
+      ref.watch(createAccountUsecaseProvider),
+    );
+    notifier.createAccount(data);
+    return notifier;
+  },
 );

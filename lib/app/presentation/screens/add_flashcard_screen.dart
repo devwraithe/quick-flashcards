@@ -79,41 +79,17 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
             horizontal: 20,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // title section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Text(
-                      "Back",
-                      style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Text(
+                  "Back",
+                  style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w500,
                   ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final state = ref.watch(fcProvider);
-
-                      return GestureDetector(
-                        onTap: () => _addFlashcard(context, ref),
-                        child: state == AddFlashcardState.loading
-                            ? UiHelpers.loader()
-                            : Text(
-                                "Save",
-                                style:
-                                    AppTextTheme.textTheme.bodyLarge?.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                      );
-                    },
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 62),
               FlashcardTextField(
@@ -127,6 +103,24 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                 controller: _answerController,
               ),
               const SizedBox(height: 62),
+              Consumer(
+                builder: (context, ref, child) {
+                  final state = ref.watch(fcProvider);
+
+                  return FilledButton(
+                    onPressed: () => _addFlashcard(context, ref),
+                    child: state == AddFlashcardState.loading
+                        ? UiHelpers.loader()
+                        : Text(
+                            "Save",
+                            style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                              color: AppColors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                  );
+                },
+              ),
             ],
           ),
         ),

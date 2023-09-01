@@ -38,6 +38,8 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
   final _answerController = TextEditingController();
 
   _addFlashcard(context, ref) async {
+    FocusManager.instance.primaryFocus?.unfocus(); // Dismiss the keyboard
+
     final state = ref.watch(fcProvider);
     final notifier = ref.watch(fcProvider.notifier);
 
@@ -110,7 +112,7 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                   return FilledButton(
                     onPressed: () => _addFlashcard(context, ref),
                     child: state == AddFlashcardState.loading
-                        ? UiHelpers.loader()
+                        ? UiHelpers.darkLoader()
                         : Text(
                             "Save",
                             style: AppTextTheme.textTheme.bodyLarge?.copyWith(

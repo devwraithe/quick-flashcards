@@ -98,7 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         return FilledButton(
                           onPressed: () => _submit(context, ref),
                           child: state == SignInState.loading
-                              ? UiHelpers.loader()
+                              ? UiHelpers.darkLoader()
                               : const Text("Sign In"),
                         );
                       },

@@ -79,7 +79,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         return FilledButton(
                           onPressed: () => _submit(context, ref),
                           child: state == ResetPasswordState.loading
-                              ? UiHelpers.loader()
+                              ? UiHelpers.darkLoader()
                               : const Text("Reset Password"),
                         );
                       },

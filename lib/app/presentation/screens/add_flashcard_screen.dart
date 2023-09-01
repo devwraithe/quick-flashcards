@@ -110,7 +110,7 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
                   return FilledButton(
                     onPressed: () => _addFlashcard(context, ref),
                     child: state == AddFlashcardState.loading
-                        ? UiHelpers.loader()
+                        ? UiHelpers.darkLoader()
                         : Text(
                             "Save",
                             style: AppTextTheme.textTheme.bodyLarge?.copyWith(

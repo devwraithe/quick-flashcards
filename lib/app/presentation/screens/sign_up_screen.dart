@@ -116,7 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return FilledButton(
                           onPressed: () => _submit(context, notifier),
                           child: state == CreateAccountState.loading
-                              ? UiHelpers.loader()
+                              ? UiHelpers.darkLoader()
                               : const Text("Create Account"),
                         );
                       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quick_flashcards/app/core/constants/constants.dart';
 import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
@@ -56,17 +57,30 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 26,
-          ),
+        child: SingleChildScrollView(
+          padding: Constants.padding,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "Welcome Back",
+                style: AppTextTheme.textTheme.displaySmall,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Continue to your account",
+                style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                  color: AppColors.grey,
+                ),
+              ),
+              const SizedBox(height: 32),
               Form(
                 key: _key,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     AppTextFieldWidget(
                       hintText: "Email",
@@ -80,17 +94,19 @@ class _SignInScreenState extends State<SignInScreen> {
                       controller: _passwordController,
                       validator: (v) => ValidatorHelper.password(v),
                       onSaved: (v) => _passwordController.text = v!,
-                      helperText: "Note: Letters and numbers are required",
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(
                         context,
                         Routes.passwordReset,
                       ),
-                      child: const Text("Forget Password"),
+                      child: Text(
+                        "Forget Password?",
+                        style: AppTextTheme.textTheme.bodyLarge,
+                      ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     Consumer(
                       builder: (context, ref, _) {
                         final state = ref.watch(signInProvider);
@@ -124,7 +140,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Text(
                       " Sign Up",
                       style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                        color: AppColors.black,
+                        color: AppColors.white,
                       ),
                     ),
                   ),

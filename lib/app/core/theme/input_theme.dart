@@ -10,8 +10,12 @@ class AppInputDecorationTheme {
       height: 1.34,
       color: AppColors.grey,
     ),
+    helperStyle: AppTextTheme.textTheme.bodyLarge?.copyWith(
+      height: 1.34,
+      color: AppColors.grey,
+    ),
     floatingLabelBehavior: FloatingLabelBehavior.never,
-    contentPadding: const EdgeInsets.symmetric(vertical: 20),
+    contentPadding: const EdgeInsets.symmetric(vertical: 18),
     isDense: true,
     enabledBorder: UiHelpers.inputBorder(AppColors.grey),
     focusedBorder: UiHelpers.inputBorder(AppColors.grey),

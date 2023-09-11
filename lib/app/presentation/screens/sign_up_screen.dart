@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 
@@ -55,25 +54,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 26,
-          ),
+          padding: Constants.padding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                'assets/vectors/logo.svg',
-                width: 180,
-                height: 180,
-              ),
-              const SizedBox(height: 60),
               Text(
                 "Create an Account",
-                style: AppTextTheme.textTheme.headlineLarge,
+                style: AppTextTheme.textTheme.displaySmall,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 6),
+              Text(
+                "Get started with Flashcards",
+                style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                  color: AppColors.grey,
+                ),
+              ),
+              const SizedBox(height: 32),
               Form(
                 key: _key,
                 child: Column(
@@ -106,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       validator: (v) => ValidatorHelper.password(v),
                       style: textTheme.bodyLarge,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     Consumer(
                       builder: (context, ref, _) {
                         final createAccount = createAccountProvider(data);

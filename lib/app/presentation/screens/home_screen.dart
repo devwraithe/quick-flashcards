@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
+import 'package:quick_flashcards/app/presentation/providers/auth_logic/sign_out_notifier.dart';
 import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_provider.dart';
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
@@ -44,6 +44,21 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void dispose() {
     super.dispose();
     _swiperController.dispose();
+  }
+
+  _signOut(context, SignOutNotifier notifier) async {
+    final result = await notifier.signOut();
+    if (result == SignOutState.success) {
+      Navigator.pushNamed(
+        context,
+        Routes.signIn,
+      );
+    } else if (result == SignOutState.failed) {
+      UiHelpers.errorFlush(
+        notifier.error!,
+        context,
+      );
+    }
   }
 
   @override
@@ -90,21 +105,24 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ),
                         const SizedBox(width: 18),
-                        GestureDetector(
-                          onTap: () async {
-                            try {
-                              await FirebaseAuth.instance.signOut();
-                              Navigator.pushNamed(context, Routes.signIn);
-                            } catch (e) {
-                              print("Error signing out: $e");
-                              // Handle sign-out errors here.
-                            }
+                        Consumer(
+                          builder: (context, ref, _) {
+                            final state = ref.watch(signOutProvider);
+                            final notifier = ref.watch(
+                              signOutProvider.notifier,
+                            );
+
+                            return GestureDetector(
+                              onTap: () => _signOut(context, notifier),
+                              child: state == SignOutState.loading
+                                  ? UiHelpers.loader()
+                                  : const Icon(
+                                      Icons.logout,
+                                      size: 28,
+                                      color: AppColors.red,
+                                    ),
+                            );
                           },
-                          child: const Icon(
-                            Icons.logout,
-                            size: 28,
-                            color: AppColors.red,
-                          ),
                         ),
                       ],
                     ),

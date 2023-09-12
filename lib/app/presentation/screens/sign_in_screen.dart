@@ -4,7 +4,6 @@ import 'package:quick_flashcards/app/core/constants/constants.dart';
 import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
-import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 
 import '../../core/helpers/snackbar_helper.dart';
 import '../../core/helpers/ui_helper.dart';
@@ -24,6 +23,12 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   final _key = GlobalKey<FormState>(debugLabel: 'sign_in');
+
+  // Show and Hide Password
+  bool _obscureText = true;
+  void _togglePassword() {
+    setState(() => _obscureText = !_obscureText);
+  }
 
   _submit(context, ref) async {
     final formState = _key.currentState!;
@@ -56,6 +61,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const textTheme = AppTextTheme.textTheme;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
@@ -82,16 +89,33 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    AppTextFieldWidget(
-                      hintText: "Email",
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        prefix: Constants.prefixSpace,
+                      ),
+                      autovalidateMode: Constants.validateMode,
                       controller: _emailController,
                       validator: (v) => ValidatorHelper.email(v),
                       onSaved: (v) => _emailController.text = v!,
+                      style: textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 18),
-                    AppTextFieldWidget(
-                      hintText: "Password",
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        prefix: Constants.prefixSpace,
+                        suffixIcon: UiHelpers.switchPassword(
+                          () => _togglePassword(),
+                          _obscureText,
+                        ),
+                      ),
+                      autovalidateMode: Constants.validateMode,
                       controller: _passwordController,
+                      style: textTheme.bodyLarge,
+                      obscureText: _obscureText ? true : false,
                       validator: (v) => ValidatorHelper.password(v),
                       onSaved: (v) => _passwordController.text = v!,
                     ),

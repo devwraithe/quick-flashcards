@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/data/repository/auth_repository_impl.dart';
 
+import '../../repositories/auth_repository.dart';
+
 class ResetPasswordUsecase {
-  final AuthRepositoryImpl _repo;
+  final AuthRepository _repo;
   ResetPasswordUsecase(this._repo);
 
   Future<void> execute(String email) async {

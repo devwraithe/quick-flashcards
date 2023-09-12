@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/constants/string_constants.dart';
+import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
@@ -257,28 +258,35 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
     Color randomItem = colors[randomColor];
 
+    final formState = _addFlashcardKey.currentState!;
+
     try {
-      final result = await notifier.addFlashcard(
-        _questionController.text,
-        _answerController.text,
-        randomItem.toString(),
-      );
-      if (result != "flashcard_created") {
-        debugPrint("Unable to Add Flashcard: ${state.toString()}");
-        showFlushbar(
-          context: context,
-          flushbar: Flushbar(
-            title: "Unable to Add Flashcard",
-          ),
+      if (formState.validate()) {
+        formState.save();
+        final result = await notifier.addFlashcard(
+          _questionController.text,
+          _answerController.text,
+          randomItem.toString(),
         );
-      } else {
-        debugPrint("Flashcard Added!");
-        Navigator.pop(context, Routes.home);
+        if (result != "flashcard_created") {
+          debugPrint("Unable to Add Flashcard: ${state.toString()}");
+          showFlushbar(
+            context: context,
+            flushbar: Flushbar(
+              title: "Unable to Add Flashcard",
+            ),
+          );
+        } else {
+          debugPrint("Flashcard Added!");
+          Navigator.pop(context, Routes.home);
+        }
       }
     } catch (e) {
       debugPrint("${StringConstants.unknownError}: ${e.toString()}");
     }
   }
+
+  final _addFlashcardKey = GlobalKey<FormState>(debugLabel: 'add-flashcard');
 
   void addFlashcard() {
     showModalBottomSheet(
@@ -294,47 +302,54 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             horizontal: 18,
             vertical: 26,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(10),
+          child: Form(
+            key: _addFlashcardKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 5,
+                  width: 80,
                 ),
-                height: 5,
-                width: 80,
-              ),
-              const SizedBox(height: 32),
-              AppTextFieldWidget(
-                hintText: "Question e.g Who am I?",
-                controller: _questionController,
-              ),
-              const SizedBox(height: 20),
-              AppTextFieldWidget(
-                hintText: "Answer e.g I am Devwraithe",
-                controller: _answerController,
-              ),
-              const SizedBox(height: 32),
-              Consumer(
-                builder: (context, ref, child) {
-                  final state = ref.watch(fcProvider);
+                const SizedBox(height: 32),
+                AppTextFieldWidget(
+                  hintText: "Question e.g Who am I?",
+                  controller: _questionController,
+                  validator: (v) => ValidatorHelper.question(v),
+                  onSaved: (v) => _questionController.text = v!,
+                ),
+                const SizedBox(height: 20),
+                AppTextFieldWidget(
+                  hintText: "Answer e.g I am Devwraithe",
+                  controller: _answerController,
+                  validator: (v) => ValidatorHelper.answer(v),
+                  onSaved: (v) => _answerController.text = v!,
+                ),
+                const SizedBox(height: 32),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final state = ref.watch(fcProvider);
 
-                  return FilledButton(
-                    onPressed: () => _addFlashcard(context, ref),
-                    child: state == AddFlashcardState.loading
-                        ? UiHelpers.darkLoader()
-                        : Text(
-                            "Add",
-                            style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w500,
+                    return FilledButton(
+                      onPressed: () => _addFlashcard(context, ref),
+                      child: state == AddFlashcardState.loading
+                          ? UiHelpers.darkLoader()
+                          : Text(
+                              "Add",
+                              style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },

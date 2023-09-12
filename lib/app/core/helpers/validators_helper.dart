@@ -23,4 +23,18 @@ class ValidatorHelper {
     }
     return null;
   }
+
+  static String? question(String? question) {
+    if (question == null || question.isEmpty) {
+      return 'Question is required';
+    }
+    return null;
+  }
+
+  static String? answer(String? answer) {
+    if (answer == null || answer.isEmpty) {
+      return 'Answer is required';
+    }
+    return null;
+  }
 }

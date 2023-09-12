@@ -113,7 +113,7 @@ class AuthRepositoryImpl implements AuthRepository {
 }
 
 // repo impl provider
-final authRepoProvider = Provider<AuthRepositoryImpl>(
+final authRepoProvider = Provider<AuthRepository>(
   (ref) {
     return AuthRepositoryImpl(FirebaseConstants.firebaseAuth);
   },

@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/repository/auth_repository_impl.dart';
+import '../../repositories/auth_repository.dart';
 
 class SignInUsecase {
-  final AuthRepositoryImpl _repo;
+  final AuthRepository _repo;
   SignInUsecase(this._repo);
 
   Future<void> execute(String email, String password) async {

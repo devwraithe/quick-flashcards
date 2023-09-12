@@ -7,32 +7,32 @@ class AppTextTheme {
   static const textTheme = TextTheme(
     displayLarge: TextStyle(
       fontSize: 56,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     displayMedium: TextStyle(
       fontSize: 40,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     displaySmall: TextStyle(
       fontSize: 28,
       fontWeight: FontWeight.w700,
-      color: AppColors.black,
+      color: AppColors.white,
     ),
     headlineLarge: TextStyle(
       fontSize: 26,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     headlineMedium: TextStyle(
       fontSize: 20,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w700,
     ),
     headlineSmall: TextStyle(
       fontSize: 18,
-      color: AppColors.black,
+      color: AppColors.white,
       fontWeight: FontWeight.w400,
     ),
     // subtitles

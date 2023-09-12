@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:quick_flashcards/app/core/constants/firebase_constants.dart';
 
 import '../../core/constants/string_constants.dart';
 import '../../core/errors/exceptions.dart';
+import '../../core/errors/failure.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -15,30 +18,30 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl(this._auth);
 
   @override
-  Future<User?> signUp(String email, String password) async {
+  Future<Either<Failure, User?>> createAccountRepo(
+      Map<String, dynamic> data) async {
     try {
       final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: data['email'],
+        password: data['password'],
       );
-      return userCredential.user;
+      return Right(userCredential.user);
     } on FirebaseAuthException catch (e) {
-      debugPrint("AuthException: $e");
       if (e.code == 'email-already-in-use') {
-        throw AuthException("Account already exists for this email");
+        throw ServerException("Account already exists for this email");
       } else if (e.code == 'weak-password') {
-        throw AuthException("Password should be greater than 6 characters");
+        throw ServerException("Password should be greater than 6 characters");
       } else if (e.code == 'invalid-email') {
-        throw AuthException("You provided an invalid email address");
+        throw ServerException("You provided an invalid email address");
       }
-    } on SocketException catch (e) {
-      debugPrint("SocketException: $e");
+    } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } catch (e) {
-      debugPrint("Error creating account: $e");
-      throw AuthException(StringConstants.unknownError);
+      throw ServerException(StringConstants.unknownError);
     }
-    return null;
+    return Left(Failure("null"));
   }
 
   @override

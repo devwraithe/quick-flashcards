@@ -1,16 +1,24 @@
+import 'dart:math';
+
+import 'package:another_flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/constants/string_constants.dart';
+import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
+import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_provider.dart';
-import 'package:quick_flashcards/app/presentation/screens/add_flashcard_screen.dart';
+import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 
 import '../../core/helpers/ui_helper.dart';
+import '../providers/flashcards_logic/add_flashcard_notifier.dart';
 import '../widgets/back_flashcard.dart';
 import '../widgets/custom_icon.dart';
 import '../widgets/front_flashcard.dart';
@@ -50,37 +58,60 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           child: Column(
             children: [
+              // The page title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Quick Flashcards",
+                      "Flashcards",
                       style: AppTextTheme.textTheme.headlineMedium?.copyWith(
                         color: AppColors.white,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const AddFlashcardScreen();
-                          },
+                    Row(
+                      children: [
+                        GestureDetector(
+                          // onTap: () => Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) {
+                          //       return const AddFlashcardScreen();
+                          //     },
+                          //   ),
+                          // ), //
+                          onTap: () => addFlashcard(),
+                          child: const Icon(
+                            Icons.add,
+                            size: 28,
+                            color: AppColors.white,
+                          ),
                         ),
-                      ), // navigate to the add_flashcard screen
-                      child: const Icon(
-                        Icons.add,
-                        size: 28,
-                        color: AppColors.white,
-                      ),
+                        const SizedBox(width: 18),
+                        GestureDetector(
+                          onTap: () async {
+                            try {
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.pushNamed(context, Routes.signIn);
+                            } catch (e) {
+                              print("Error signing out: $e");
+                              // Handle sign-out errors here.
+                            }
+                          },
+                          child: const Icon(
+                            Icons.logout,
+                            size: 28,
+                            color: AppColors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 34),
+              const SizedBox(height: 28),
               Consumer(
                 builder: (context, ref, _) {
                   final state = ref.watch(getFlashcardsProvider);
@@ -96,7 +127,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 36),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -204,5 +235,124 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     } else {
       return const Text("Something went wrong");
     }
+  }
+
+  final colors = [
+    AppColors.cardGreen,
+    AppColors.cardRed,
+    AppColors.cardBlue,
+    AppColors.cardYellow,
+  ];
+  Random random = Random();
+
+  final _questionController = TextEditingController();
+  final _answerController = TextEditingController();
+
+  _addFlashcard(context, ref) async {
+    FocusManager.instance.primaryFocus?.unfocus(); // Dismiss the keyboard
+
+    final state = ref.watch(fcProvider);
+    final notifier = ref.watch(fcProvider.notifier);
+
+    int randomColor = random.nextInt(colors.length);
+
+    Color randomItem = colors[randomColor];
+
+    final formState = _addFlashcardKey.currentState!;
+
+    try {
+      if (formState.validate()) {
+        formState.save();
+        final result = await notifier.addFlashcard(
+          _questionController.text,
+          _answerController.text,
+          randomItem.toString(),
+        );
+        if (result != "flashcard_created") {
+          debugPrint("Unable to Add Flashcard: ${state.toString()}");
+          showFlushbar(
+            context: context,
+            flushbar: Flushbar(
+              title: "Unable to Add Flashcard",
+            ),
+          );
+        } else {
+          debugPrint("Flashcard Added!");
+          Navigator.pop(context, Routes.home);
+        }
+      }
+    } catch (e) {
+      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+    }
+  }
+
+  final _addFlashcardKey = GlobalKey<FormState>(debugLabel: 'add-flashcard');
+
+  void addFlashcard() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(18),
+        ),
+      ),
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 26,
+          ),
+          child: Form(
+            key: _addFlashcardKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  height: 5,
+                  width: 80,
+                ),
+                const SizedBox(height: 32),
+                AppTextFieldWidget(
+                  hintText: "Question e.g Who am I?",
+                  controller: _questionController,
+                  validator: (v) => ValidatorHelper.question(v),
+                  onSaved: (v) => _questionController.text = v!,
+                ),
+                const SizedBox(height: 20),
+                AppTextFieldWidget(
+                  hintText: "Answer e.g I am Devwraithe",
+                  controller: _answerController,
+                  validator: (v) => ValidatorHelper.answer(v),
+                  onSaved: (v) => _answerController.text = v!,
+                ),
+                const SizedBox(height: 32),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final state = ref.watch(fcProvider);
+
+                    return FilledButton(
+                      onPressed: () => _addFlashcard(context, ref),
+                      child: state == AddFlashcardState.loading
+                          ? UiHelpers.darkLoader()
+                          : Text(
+                              "Add",
+                              style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

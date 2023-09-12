@@ -1,4 +1,4 @@
-class ValidatorsHelper {
+class ValidatorHelper {
   static bool _isEmailValid(String email) {
     final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
     return emailRegex.hasMatch(email);
@@ -24,17 +24,16 @@ class ValidatorsHelper {
     return null;
   }
 
-  static String? def(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This is required';
+  static String? question(String? question) {
+    if (question == null || question.isEmpty) {
+      return 'Question is required';
     }
     return null;
   }
 
-  // add trip fields
-  static String? trip(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This field is required';
+  static String? answer(String? answer) {
+    if (answer == null || answer.isEmpty) {
+      return 'Answer is required';
     }
     return null;
   }

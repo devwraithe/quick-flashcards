@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_flashcards/app/core/constants/constants.dart';
 
 class AppTextFieldWidget extends StatelessWidget {
   final String? hintText, helperText;
@@ -22,10 +23,11 @@ class AppTextFieldWidget extends StatelessWidget {
       controller: controller,
       validator: validator,
       onSaved: onSaved,
+      style: Constants.textFieldStyle,
       decoration: InputDecoration(
         prefix: const SizedBox(
           width: 20,
-          height: 18.6,
+          height: 0,
         ),
         hintText: hintText,
         helperText: helperText,

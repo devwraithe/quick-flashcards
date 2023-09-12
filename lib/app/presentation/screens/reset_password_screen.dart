@@ -69,7 +69,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     AppTextFieldWidget(
                       hintText: "Email",
                       controller: _emailController,
-                      validator: (v) => ValidatorsHelper.email(v),
+                      validator: (v) => ValidatorHelper.email(v),
                       onSaved: (v) => _emailController.text = v!,
                     ),
                     const SizedBox(height: 20),
@@ -79,7 +79,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         return FilledButton(
                           onPressed: () => _submit(context, ref),
                           child: state == ResetPasswordState.loading
-                              ? UiHelpers.loader()
+                              ? UiHelpers.darkLoader()
                               : const Text("Reset Password"),
                         );
                       },

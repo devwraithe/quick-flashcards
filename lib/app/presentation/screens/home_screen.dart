@@ -356,7 +356,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                       final state = ref.watch(fcProvider);
 
                       return FilledButton(
-                        onPressed: () => _addFlashcard(context, ref),
+                        onPressed: () {
+                          _addFlashcard(context, ref);
+
+                          // Clear data from the bottom sheet
+                          _questionController.clear();
+                          _answerController.clear();
+                        },
                         child: state == AddFlashcardState.loading
                             ? UiHelpers.darkLoader()
                             : Text(

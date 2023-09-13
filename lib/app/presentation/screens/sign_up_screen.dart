@@ -24,13 +24,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     "password": "",
   };
 
-  /// TOGGLING ICON
+  // Toggle show/hide password
   bool _obscureText = true;
   void _togglePassword() {
     setState(() => _obscureText = !_obscureText);
   }
 
   _submit(context, CreateAccountNotifier notifier) async {
+    // Dismiss the keyboard on method call
+    FocusManager.instance.primaryFocus?.unfocus();
+
     final formState = _key.currentState!;
 
     if (formState.validate()) {

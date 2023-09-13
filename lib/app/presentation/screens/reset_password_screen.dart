@@ -24,6 +24,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _key = GlobalKey<FormState>(debugLabel: 'reset_password');
 
   _submit(context, ref) async {
+    // Dismiss the keyboard on method call
+    FocusManager.instance.primaryFocus?.unfocus();
+
     final formState = _key.currentState!;
 
     final state = ref.watch(resetPasswordProvider);

@@ -6,10 +6,13 @@ import 'card_content.dart';
 
 class BackFlashcard extends StatelessWidget {
   final CardModel card;
+  final int? currentCard, totalCards;
 
   const BackFlashcard({
     Key? key,
     required this.card,
+    this.currentCard,
+    this.totalCards,
   }) : super(key: key);
 
   @override
@@ -32,7 +35,7 @@ class BackFlashcard extends StatelessWidget {
       child: CardContent(
         title: "Answer",
         value: card.answer,
-        counter: '1/20',
+        counter: '${currentCard ?? "0"} of ${totalCards ?? "0"}',
       ),
     );
   }

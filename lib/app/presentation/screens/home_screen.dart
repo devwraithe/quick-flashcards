@@ -306,6 +306,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   void addFlashcard() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -318,53 +319,65 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             horizontal: 18,
             vertical: 26,
           ),
-          child: Form(
-            key: _addFlashcardKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Form(
+              key: _addFlashcardKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: 5,
+                    width: 80,
                   ),
-                  height: 5,
-                  width: 80,
-                ),
-                const SizedBox(height: 32),
-                AppTextFieldWidget(
-                  hintText: "Question e.g Who am I?",
-                  controller: _questionController,
-                  validator: (v) => ValidatorHelper.question(v),
-                  onSaved: (v) => _questionController.text = v!,
-                ),
-                const SizedBox(height: 20),
-                AppTextFieldWidget(
-                  hintText: "Answer e.g I am Devwraithe",
-                  controller: _answerController,
-                  validator: (v) => ValidatorHelper.answer(v),
-                  onSaved: (v) => _answerController.text = v!,
-                ),
-                const SizedBox(height: 32),
-                Consumer(
-                  builder: (context, ref, child) {
-                    final state = ref.watch(fcProvider);
+                  const SizedBox(height: 32),
+                  AppTextFieldWidget(
+                    hintText: "Question e.g Who am I?",
+                    controller: _questionController,
+                    validator: (v) => ValidatorHelper.question(v),
+                    onSaved: (v) => _questionController.text = v!,
+                  ),
+                  const SizedBox(height: 20),
+                  AppTextFieldWidget(
+                    hintText: "Answer e.g I am Devwraithe",
+                    controller: _answerController,
+                    validator: (v) => ValidatorHelper.answer(v),
+                    onSaved: (v) => _answerController.text = v!,
+                  ),
+                  const SizedBox(height: 32),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final state = ref.watch(fcProvider);
 
-                    return FilledButton(
-                      onPressed: () => _addFlashcard(context, ref),
-                      child: state == AddFlashcardState.loading
-                          ? UiHelpers.darkLoader()
-                          : Text(
-                              "Add",
-                              style: AppTextTheme.textTheme.bodyLarge?.copyWith(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.w500,
+                      return FilledButton(
+                        onPressed: () {
+                          _addFlashcard(context, ref);
+
+                          // Clear data from the bottom sheet
+                          _questionController.clear();
+                          _answerController.clear();
+                        },
+                        child: state == AddFlashcardState.loading
+                            ? UiHelpers.darkLoader()
+                            : Text(
+                                "Add",
+                                style:
+                                    AppTextTheme.textTheme.bodyLarge?.copyWith(
+                                  color: AppColors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );

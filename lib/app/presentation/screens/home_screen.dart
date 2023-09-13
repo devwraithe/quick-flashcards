@@ -89,14 +89,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     Row(
                       children: [
                         GestureDetector(
-                          // onTap: () => Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) {
-                          //       return const AddFlashcardScreen();
-                          //     },
-                          //   ),
-                          // ), //
                           onTap: () => addFlashcard(),
                           child: const Icon(
                             Icons.add,
@@ -134,8 +126,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context, ref, _) {
                   final state = ref.watch(getFlashcardsProvider);
                   final notifier = ref.read(getFlashcardsProvider.notifier);
-
-                  print("current state: $state");
 
                   return Expanded(
                     child: handleFlashcards(
@@ -245,8 +235,16 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             direction: FlipDirection.HORIZONTAL,
             side: CardSide.FRONT,
             controller: _flipController,
-            front: FrontFlashcard(card: card),
-            back: BackFlashcard(card: card),
+            front: FrontFlashcard(
+              card: card,
+              currentCard: index + 1,
+              totalCards: notifier.flashcardsList!.length,
+            ),
+            back: BackFlashcard(
+              card: card,
+              currentCard: index + 1,
+              totalCards: notifier.flashcardsList!.length,
+            ),
           );
         },
       );

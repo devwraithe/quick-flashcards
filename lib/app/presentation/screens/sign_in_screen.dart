@@ -31,6 +31,9 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   _submit(context, ref) async {
+    // Dismiss the keyboard on method call
+    FocusManager.instance.primaryFocus?.unfocus();
+
     final formState = _key.currentState!;
 
     final state = ref.watch(signInProvider);

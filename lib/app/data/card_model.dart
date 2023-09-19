@@ -23,9 +23,11 @@ class CardModel {
       user: data['user'],
       question: data['question'],
       answer: data['answer'],
-      // color: data['color'],
-      color: Color(int.parse(
-          data['color'].replaceAll("Color(", "").replaceAll(")", ""))),
+      color: Color(
+        int.parse(
+          data['color'].replaceAll("Color(", "").replaceAll(")", ""),
+        ),
+      ),
     );
   }
   List<Object?> get props => [

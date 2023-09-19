@@ -10,7 +10,6 @@ class AppButtonTheme {
     style: AppButtonTheme.darkThemeFilledButton,
   );
 
-  /// BUTTON FOR THE DARK THEME
   static final darkThemeFilledButton = FilledButton.styleFrom(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(Constants.inputRadius),

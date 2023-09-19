@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/domain/usecases/flashcard_usecase/create_flashcard_usecase.dart';
 
-import 'get_flashcards_provider.dart';
+import 'get_flashcards_notifier.dart';
 
 enum CreateFlashcardState { initial, loading, success, failed }
 

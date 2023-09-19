@@ -56,29 +56,22 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
           .where('user', isEqualTo: user!.uid)
           .get();
       if (querySnapshot.docs.isNotEmpty) {
-        debugPrint("[QUERY DATA SNAPSHOT] ${querySnapshot.docs.first.data()}");
         final flashcardsList = querySnapshot.docs.map((flashcard) {
           return CardModel.fromSnapshot(flashcard);
         }).toList();
-        debugPrint("[PARSE IN MODEL] ${flashcardsList.length}");
         return Right(flashcardsList);
       } else {
-        return Left(
-          Failure(
-            StringConstants.emptyFlashcardsList,
-          ),
-        );
+        return Left(Failure(StringConstants.emptyFlashcardsList));
       }
     } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } on FirebaseAuthException catch (e) {
-      debugPrint("[AUTH EXCEPTION] $e");
       throw ServerException(e.toString());
     } on FirebaseException catch (e) {
-      debugPrint("[FIREBASE EXCEPTION] $e");
       throw ServerException(e.toString());
     } catch (e) {
-      debugPrint("Something went wrong: $e");
       throw ServerException(e.toString());
     }
   }

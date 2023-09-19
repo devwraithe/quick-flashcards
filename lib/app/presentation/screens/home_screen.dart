@@ -11,7 +11,7 @@ import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 import 'package:quick_flashcards/app/presentation/providers/auth_logic/logout_notifier.dart';
-import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_provider.dart';
+import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_notifier.dart';
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 

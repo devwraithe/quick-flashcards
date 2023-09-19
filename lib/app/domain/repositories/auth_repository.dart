@@ -5,8 +5,8 @@ import '../../core/errors/failure.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, User?>> createAccountRepo(Map<String, dynamic> data);
-  Future<void> signIn(String email, String password);
+  Future<void> login(Map<String, dynamic> data);
   Future<void> resetPassword(String email);
+  Future<void> logout();
   Future<bool> checkAuthStatus();
-  Future<void> signOut();
 }

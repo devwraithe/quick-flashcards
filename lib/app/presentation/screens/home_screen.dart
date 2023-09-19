@@ -46,14 +46,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     _swiperController.dispose();
   }
 
-  _signOut(context, SignOutNotifier notifier) async {
+  _signOut(context, LogoutNotifier notifier) async {
     final result = await notifier.signOut();
-    if (result == SignOutState.success) {
+    if (result == LogoutState.success) {
       Navigator.pushNamed(
         context,
         Routes.signIn,
       );
-    } else if (result == SignOutState.failed) {
+    } else if (result == LogoutState.failed) {
       UiHelpers.errorFlush(
         notifier.error!,
         context,
@@ -99,14 +99,14 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                         const SizedBox(width: 18),
                         Consumer(
                           builder: (context, ref, _) {
-                            final state = ref.watch(signOutProvider);
+                            final state = ref.watch(logoutProvider);
                             final notifier = ref.watch(
-                              signOutProvider.notifier,
+                              logoutProvider.notifier,
                             );
 
                             return GestureDetector(
                               onTap: () => _signOut(context, notifier),
-                              child: state == SignOutState.loading
+                              child: state == LogoutState.loading
                                   ? UiHelpers.loader()
                                   : const Icon(
                                       Icons.logout,

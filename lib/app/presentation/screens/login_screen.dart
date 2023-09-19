@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/constants/constants.dart';
-import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 
-import '../../core/helpers/snackbar_helper.dart';
 import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
-import '../providers/auth_logic/sign_in_notifier.dart';
+import '../providers/auth_logic/login_notifier.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final _key = GlobalKey<FormState>(debugLabel: 'login');
 
-  final _key = GlobalKey<FormState>(debugLabel: 'sign_in');
+  final Map<String, dynamic> data = {
+    "email": "",
+    "password": "",
+  };
 
   // Show and Hide Password
   bool _obscureText = true;
@@ -30,35 +30,21 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() => _obscureText = !_obscureText);
   }
 
-  _submit(context, ref) async {
-    // Dismiss the keyboard on method call
+  _submit(context, LoginNotifier notifier) async {
+    // Dismiss the keyboard
     FocusManager.instance.primaryFocus?.unfocus();
 
     final formState = _key.currentState!;
 
-    final state = ref.watch(signInProvider);
-    final notifier = ref.watch(signInProvider.notifier);
-
-    try {
-      if (formState.validate()) {
-        formState.save();
-        final result = await notifier.signIn(
-          _emailController.text,
-          _passwordController.text,
-        );
-        if (state != SignInState.success) {
-          debugPrint('[UI AUTH ERROR] $result');
-          return AppSnackbar.error(context, result);
-        } else {
-          Navigator.pushNamed(context, Routes.home);
-        }
+    if (formState.validate()) {
+      formState.save();
+      final result = await notifier.login(data);
+      if (result == LoginState.success) {
+        Navigator.pushNamed(context, Routes.home);
       }
-    } catch (e) {
-      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
-      AppSnackbar.error(
-        context,
-        "${StringConstants.unknownError}: ${e.toString()}",
-      );
+      if (result == LoginState.failed) {
+        return UiHelpers.errorFlush(notifier.error!, context);
+      }
     }
   }
 
@@ -99,9 +85,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         prefix: Constants.prefixSpace,
                       ),
                       autovalidateMode: Constants.validateMode,
-                      controller: _emailController,
                       validator: (v) => ValidatorHelper.email(v),
-                      onSaved: (v) => _emailController.text = v!,
+                      onSaved: (v) => data['email'] = v!,
                       style: textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 18),
@@ -116,11 +101,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                       autovalidateMode: Constants.validateMode,
-                      controller: _passwordController,
                       style: textTheme.bodyLarge,
                       obscureText: _obscureText ? true : false,
                       validator: (v) => ValidatorHelper.password(v),
-                      onSaved: (v) => _passwordController.text = v!,
+                      onSaved: (v) => data['password'] = v!,
                     ),
                     const SizedBox(height: 30),
                     GestureDetector(
@@ -136,13 +120,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     const SizedBox(height: 30),
                     Consumer(
                       builder: (context, ref, _) {
-                        final state = ref.watch(signInProvider);
+                        final state = ref.watch(loginProvider);
+                        final notifier = ref.watch(loginProvider.notifier);
 
                         return FilledButton(
-                          onPressed: () => _submit(context, ref),
-                          child: state == SignInState.loading
+                          onPressed: () => _submit(context, notifier),
+                          child: state == LoginState.loading
                               ? UiHelpers.darkLoader()
-                              : const Text("Sign In"),
+                              : const Text("Login"),
                         );
                       },
                     ),

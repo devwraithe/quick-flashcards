@@ -19,7 +19,8 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, User?>> createAccountRepo(
-      Map<String, dynamic> data) async {
+    Map<String, dynamic> data,
+  ) async {
     try {
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: data['email'],
@@ -30,9 +31,11 @@ class AuthRepositoryImpl implements AuthRepository {
       if (e.code == 'email-already-in-use') {
         throw ServerException("Account already exists for this email");
       } else if (e.code == 'weak-password') {
-        throw ServerException("Password should be greater than 6 characters");
+        throw ServerException("Password must be more than 6 characters");
       } else if (e.code == 'invalid-email') {
-        throw ServerException("You provided an invalid email address");
+        throw ServerException("An invalid email address was provided");
+      } else {
+        throw ServerException(StringConstants.unknownError);
       }
     } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
@@ -41,18 +44,16 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       throw ServerException(StringConstants.unknownError);
     }
-    return Left(Failure("null"));
   }
 
   @override
-  Future<void> signIn(String email, String password) async {
+  Future<void> login(Map<String, dynamic> data) async {
     try {
       await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: data['email'],
+        password: data['password'],
       );
     } on FirebaseAuthException catch (e) {
-      debugPrint("AuthException: $e");
       if (e.code == 'user-not-found') {
         throw AuthException("No user found for this email");
       } else if (e.code == 'wrong-password') {
@@ -61,10 +62,10 @@ class AuthRepositoryImpl implements AuthRepository {
         throw AuthException("You provided an invalid email address");
       }
     } on SocketException catch (e) {
-      debugPrint("SocketException: $e");
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } catch (e) {
-      debugPrint("Error signing in: $e");
       throw AuthException(StringConstants.unknownError);
     }
   }
@@ -72,7 +73,9 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> resetPassword(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(
+        email: email,
+      );
     } on FirebaseAuthException catch (e) {
       debugPrint("AuthException: $e");
       if (e.code == 'user-not-found') {
@@ -81,26 +84,25 @@ class AuthRepositoryImpl implements AuthRepository {
         throw AuthException("You provided an invalid email address");
       }
     } on SocketException catch (e) {
-      debugPrint("SocketException: $e");
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } catch (e) {
-      debugPrint("Error resetting password: $e");
       throw AuthException(StringConstants.unknownError);
     }
   }
 
   @override
-  Future<void> signOut() async {
+  Future<void> logout() async {
     try {
       await _auth.signOut();
     } on FirebaseAuthException catch (e) {
-      debugPrint("AuthException: $e");
       throw AuthException("No user found for this email");
     } on SocketException catch (e) {
-      debugPrint("SocketException: $e");
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } catch (e) {
-      debugPrint("Error signing out: $e");
       throw AuthException(StringConstants.unknownError);
     }
   }
@@ -112,9 +114,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 }
 
-// repo impl provider
+// Authentication Repository Provider
 final authRepoProvider = Provider<AuthRepository>(
   (ref) {
-    return AuthRepositoryImpl(FirebaseConstants.firebaseAuth);
+    return AuthRepositoryImpl(
+      FirebaseConstants.firebaseAuth,
+    );
   },
 );

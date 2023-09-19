@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/repository/auth_repository_impl.dart';
 import '../../repositories/auth_repository.dart';
 
-class LogoutUsecase {
+class LoginUsecase {
   final AuthRepository _repo;
-  LogoutUsecase(this._repo);
+  LoginUsecase(this._repo);
 
-  Future<void> execute() async {
-    return await _repo.logout();
+  Future<void> execute(Map<String, dynamic> data) async {
+    return await _repo.login(data);
   }
 }
 
-final logoutUsecaseProvider = Provider<LogoutUsecase>(
-  (ref) => LogoutUsecase(
+final loginUsecaseProvider = Provider<LoginUsecase>(
+  (ref) => LoginUsecase(
     ref.watch(authRepoProvider),
   ),
 );

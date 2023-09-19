@@ -2,30 +2,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/usecases/auth_usecases/signout_usecase.dart';
 
-enum SignOutState { initial, loading, success, failed }
+enum LogoutState { initial, loading, success, failed }
 
-class SignOutNotifier extends StateNotifier<SignOutState> {
-  final SignOutUsecase _usecase;
-  SignOutNotifier(this._usecase) : super(SignOutState.initial);
+class LogoutNotifier extends StateNotifier<LogoutState> {
+  final LogoutUsecase _usecase;
+  LogoutNotifier(this._usecase) : super(LogoutState.initial);
 
   String? error;
 
-  Future<SignOutState> signOut() async {
-    state = SignOutState.loading;
+  Future<LogoutState> signOut() async {
+    state = LogoutState.loading;
     try {
       await _usecase.execute();
-      state = SignOutState.success;
+      state = LogoutState.success;
       return state;
     } catch (e) {
-      state = SignOutState.failed;
+      state = LogoutState.failed;
       error = e.toString();
       return state;
     }
   }
 }
 
-final signOutProvider = StateNotifierProvider<SignOutNotifier, SignOutState>(
-  (ref) => SignOutNotifier(
-    ref.watch(signOutUsecaseProvider),
+final logoutProvider = StateNotifierProvider<LogoutNotifier, LogoutState>(
+  (ref) => LogoutNotifier(
+    ref.watch(logoutUsecaseProvider),
   ),
 );

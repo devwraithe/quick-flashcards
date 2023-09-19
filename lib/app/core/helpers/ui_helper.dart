@@ -49,6 +49,25 @@ class UiHelpers {
     )..show(context);
   }
 
+  static successFlush(
+    String message,
+    BuildContext context,
+  ) async {
+    return Flushbar(
+      messageText: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: AppTextTheme.textTheme.bodyLarge?.copyWith(
+          color: AppColors.white,
+        ),
+      ),
+      duration: const Duration(seconds: 2),
+      backgroundColor: AppColors.green,
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
+    )..show(context);
+  }
+
   static switchPassword(void Function()? onTap, bool obscurePassword) {
     return GestureDetector(
       onTap: onTap,

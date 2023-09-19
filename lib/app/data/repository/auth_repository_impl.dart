@@ -83,7 +83,7 @@ class AuthRepositoryImpl implements AuthRepository {
       } else if (e.code == 'invalid-email') {
         throw AuthException("You provided an invalid email address");
       }
-    } on SocketException catch (e) {
+    } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
     } on TimeoutException catch (_) {
       throw ConnectionException(StringConstants.timeoutError);

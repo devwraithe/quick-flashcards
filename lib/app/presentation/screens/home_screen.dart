@@ -5,8 +5,6 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/constants/string_constants.dart';
-import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
@@ -15,7 +13,9 @@ import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 
-import '../../core/helpers/ui_helper.dart';
+import '../../core/utilities/constants/constants.dart';
+import '../../core/utilities/helpers/ui_helper.dart';
+import '../../core/utilities/helpers/validators_helper.dart';
 import '../providers/flashcards_logic/add_flashcard_notifier.dart';
 import '../widgets/back_flashcard.dart';
 import '../widgets/custom_icon.dart';
@@ -177,7 +177,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         child: UiHelpers.loader(),
       );
     } else if (state == GetFlashcardsState.failed) {
-      if (notifier.error == StringConstants.emptyFlashcardsList) {
+      if (notifier.error == Constants.emptyFlashcardsList) {
         return Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

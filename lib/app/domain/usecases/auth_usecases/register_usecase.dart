@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/errors/failure.dart';
+import 'package:quick_flashcards/app/core/utilities/errors/failure.dart';
 
 import '../../../data/repository/auth_repository_impl.dart';
 import '../../repositories/auth_repository.dart';

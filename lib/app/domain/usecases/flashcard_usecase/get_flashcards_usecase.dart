@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/data/card_model.dart';
 import 'package:quick_flashcards/app/data/repository/flashcards_repository_impl.dart';
 
-import '../../../core/errors/failure.dart';
+import '../../../core/utilities/errors/failure.dart';
 import '../../repositories/flashcard_repository.dart';
 
 class GetFlashcardsUsecase {

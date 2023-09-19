@@ -5,11 +5,11 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/constants/firebase_constants.dart';
 
-import '../../core/constants/string_constants.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failure.dart';
+import '../../core/utilities/constants/constants.dart';
+import '../../core/utilities/constants/firebase_constants.dart';
+import '../../core/utilities/errors/exceptions.dart';
+import '../../core/utilities/errors/failure.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -35,14 +35,14 @@ class AuthRepositoryImpl implements AuthRepository {
       } else if (e.code == 'invalid-email') {
         throw ServerException("An invalid email address was provided");
       } else {
-        throw ServerException(StringConstants.unknownError);
+        throw ServerException(Constants.unknownError);
       }
     } on SocketException catch (_) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw ServerException(StringConstants.unknownError);
+      throw ServerException(Constants.unknownError);
     }
   }
 
@@ -62,11 +62,11 @@ class AuthRepositoryImpl implements AuthRepository {
         throw AuthException("You provided an invalid email address");
       }
     } on SocketException catch (e) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(StringConstants.unknownError);
+      throw AuthException(Constants.unknownError);
     }
   }
 
@@ -84,11 +84,11 @@ class AuthRepositoryImpl implements AuthRepository {
         throw AuthException("You provided an invalid email address");
       }
     } on SocketException catch (_) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(StringConstants.unknownError);
+      throw AuthException(Constants.unknownError);
     }
   }
 
@@ -99,11 +99,11 @@ class AuthRepositoryImpl implements AuthRepository {
     } on FirebaseAuthException catch (e) {
       throw AuthException("No user found for this email");
     } on SocketException catch (e) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(StringConstants.unknownError);
+      throw AuthException(Constants.unknownError);
     }
   }
 

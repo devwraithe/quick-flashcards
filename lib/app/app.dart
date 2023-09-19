@@ -4,8 +4,8 @@ import 'package:quick_flashcards/app/core/routes/app_routes.dart';
 import 'package:quick_flashcards/app/presentation/screens/home_screen.dart';
 import 'package:quick_flashcards/app/presentation/screens/login_screen.dart';
 
-import 'core/helpers/ui_helper.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utilities/helpers/ui_helper.dart';
 import 'domain/usecases/auth_usecases/auth_status_usecase.dart';
 
 class QuickFlashcards extends ConsumerWidget {

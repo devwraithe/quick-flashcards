@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tabler_icons/tabler_icons.dart';
 
+import '../../theme/app_colors.dart';
+import '../../theme/text_theme.dart';
 import '../constants/constants.dart';
-import '../theme/app_colors.dart';
-import '../theme/text_theme.dart';
 
 class UiHelpers {
   static loader() {

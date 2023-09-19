@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 
-import '../helpers/ui_helper.dart';
+import '../utilities/helpers/ui_helper.dart';
 import 'app_colors.dart';
 
 class AppInputDecorationTheme {

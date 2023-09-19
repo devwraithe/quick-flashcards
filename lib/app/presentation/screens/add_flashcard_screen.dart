@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/data/card_model.dart';
 
-import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
+import '../../core/utilities/helpers/ui_helper.dart';
 import '../providers/flashcards_logic/add_flashcard_notifier.dart';
 import '../widgets/flashcard_text_field.dart';
 
@@ -72,7 +72,7 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
     //     Navigator.pop(context, Routes.home);
     //   }
     // } catch (e) {
-    //   debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+    //   debugPrint("${Constants.unknownError}: ${e.toString()}");
     // }
   }
 

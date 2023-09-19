@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/constants/constants.dart';
-import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
+import 'package:quick_flashcards/app/core/utilities/constants/constants.dart';
 
-import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
+import '../../core/utilities/helpers/ui_helper.dart';
+import '../../core/utilities/helpers/validators_helper.dart';
 import '../providers/auth_logic/login_notifier.dart';
 
 class LoginScreen extends StatefulWidget {

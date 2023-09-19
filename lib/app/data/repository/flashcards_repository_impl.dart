@@ -5,13 +5,13 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/constants/firebase_constants.dart';
+import 'package:quick_flashcards/app/core/utilities/constants/firebase_constants.dart';
 import 'package:quick_flashcards/app/data/card_model.dart';
 import 'package:quick_flashcards/app/domain/repositories/flashcard_repository.dart';
 
-import '../../core/constants/string_constants.dart';
-import '../../core/errors/exceptions.dart';
-import '../../core/errors/failure.dart';
+import '../../core/utilities/constants/constants.dart';
+import '../../core/utilities/errors/exceptions.dart';
+import '../../core/utilities/errors/failure.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   @override
@@ -39,11 +39,11 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
         debugPrint("Error creating flashcard: $err");
       });
     } on SocketException catch (_) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(StringConstants.unknownError);
+      throw AuthException(Constants.unknownError);
     }
   }
 
@@ -61,12 +61,12 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
         }).toList();
         return Right(flashcardsList);
       } else {
-        return Left(Failure(StringConstants.emptyFlashcardsList));
+        return Left(Failure(Constants.emptyFlashcardsList));
       }
     } on SocketException catch (_) {
-      throw ConnectionException(StringConstants.socketError);
+      throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
-      throw ConnectionException(StringConstants.timeoutError);
+      throw ConnectionException(Constants.timeoutError);
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.toString());
     } on FirebaseException catch (e) {

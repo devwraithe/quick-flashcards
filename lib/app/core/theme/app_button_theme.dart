@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quick_flashcards/app/core/constants/string_constants.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 
-import '../constants/constants.dart';
+import '../utilities/constants/constants.dart';
 import 'app_colors.dart';
 
 @immutable
@@ -17,7 +16,7 @@ class AppButtonTheme {
       borderRadius: BorderRadius.circular(Constants.inputRadius),
     ),
     textStyle: AppTextTheme.textTheme.titleLarge?.copyWith(
-      fontFamily: StringConstants.fontFamily,
+      fontFamily: Constants.fontFamily,
       color: AppColors.black,
       fontWeight: FontWeight.w500,
     ),

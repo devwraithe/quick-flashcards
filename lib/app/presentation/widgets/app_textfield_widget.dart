@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quick_flashcards/app/core/constants/constants.dart';
+import 'package:quick_flashcards/app/core/utilities/constants/constants.dart';
 
 class AppTextFieldWidget extends StatelessWidget {
   final String? hintText, helperText;

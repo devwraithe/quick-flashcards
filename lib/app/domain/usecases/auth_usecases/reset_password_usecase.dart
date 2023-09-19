@@ -4,17 +4,18 @@ import 'package:quick_flashcards/app/data/repository/auth_repository_impl.dart';
 import '../../repositories/auth_repository.dart';
 
 class ResetPasswordUsecase {
-  final AuthRepository _repo;
-  ResetPasswordUsecase(this._repo);
+  final AuthRepository _repository;
+  ResetPasswordUsecase(this._repository);
 
   Future<void> execute(String email) async {
-    return await _repo.resetPassword(email);
+    return await _repository.resetPassword(email);
   }
 }
 
-// usecase provider
-final resetPasswordUsecase = Provider<ResetPasswordUsecase>(
+final resetPasswordUsecaseProvider = Provider<ResetPasswordUsecase>(
   (ref) => ResetPasswordUsecase(
-    ref.watch(authRepoProvider),
+    ref.watch(
+      authRepoProvider,
+    ),
   ),
 );

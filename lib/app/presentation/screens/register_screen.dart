@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 
-import '../../core/constants/constants.dart';
-import '../../core/helpers/ui_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
-import '../providers/auth_logic/sign_up_notifier.dart';
+import '../../core/utilities/constants/constants.dart';
+import '../../core/utilities/helpers/ui_helper.dart';
+import '../../core/utilities/helpers/validators_helper.dart';
+import '../providers/auth_logic/register_notifier.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -17,35 +17,33 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _key = GlobalKey<FormState>(debugLabel: 'create-account');
+  final _key = GlobalKey<FormState>(debugLabel: 'register');
 
   final Map<String, dynamic> data = {
     "email": "",
     "password": "",
   };
 
-  // Toggle show/hide password
+  // Show and hide password
   bool _obscureText = true;
   void _togglePassword() {
     setState(() => _obscureText = !_obscureText);
   }
 
-  _submit(context, CreateAccountNotifier notifier) async {
-    // Dismiss the keyboard on method call
+  _submit(context, RegisterNotifier notifier) async {
+    // Dismiss the keyboard
     FocusManager.instance.primaryFocus?.unfocus();
 
     final formState = _key.currentState!;
 
     if (formState.validate()) {
       formState.save();
-      final result = await notifier.createAccount(data);
-      if (result == CreateAccountState.success) {
+      final result = await notifier.register(data);
+      if (result == RegisterState.success) {
         Navigator.pushNamed(context, Routes.home);
-      } else if (result == CreateAccountState.failed) {
-        UiHelpers.errorFlush(
-          notifier.errorMessage!,
-          context,
-        );
+      }
+      if (result == RegisterState.failed) {
+        UiHelpers.errorFlush(notifier.error!, context);
       }
     }
   }
@@ -109,13 +107,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const SizedBox(height: 30),
                     Consumer(
                       builder: (context, ref, _) {
-                        final createAccount = createAccountProvider(data);
-                        final state = ref.watch(createAccount);
-                        final notifier = ref.read(createAccount.notifier);
+                        final state = ref.watch(registerProvider);
+                        final notifier = ref.read(registerProvider.notifier);
 
                         return FilledButton(
                           onPressed: () => _submit(context, notifier),
-                          child: state == CreateAccountState.loading
+                          child: state == RegisterState.loading
                               ? UiHelpers.darkLoader()
                               : const Text("Create Account"),
                         );

@@ -15,29 +15,34 @@ import '../../core/errors/failure.dart';
 
 class FlashcardRepositoryImpl implements FlashcardRepository {
   @override
-  Future<void> addFlashcard(
-      String question, String answer, String color) async {
-    final itemsRef = FirebaseConstants.firestore.collection("flashcards");
+  Future<void> createFlashcard(
+    String question,
+    String answer,
+    String color,
+  ) async {
+    final flashcardCollection = FirebaseConstants.firestore.collection(
+      "flashcards",
+    );
     try {
-      final newItemRef = itemsRef.doc(); // this generates a new id
-      final newItemId = newItemRef.id;
+      final newFlashcardCollection = flashcardCollection.doc();
+      final newFlashcardId = newFlashcardCollection.id;
 
-      await itemsRef.add({
-        'id': newItemId,
+      await flashcardCollection.add({
+        'id': newFlashcardId,
         'user': FirebaseConstants.user!.uid,
         'question': question,
         'answer': answer,
         'color': color,
       }).then((value) {
-        debugPrint("Flashcard created: $value");
+        debugPrint("Flashcard created successfully: $value");
       }).catchError((err) {
         debugPrint("Error creating flashcard: $err");
       });
-    } on SocketException catch (e) {
-      debugPrint("SocketException: $e");
+    } on SocketException catch (_) {
       throw ConnectionException(StringConstants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(StringConstants.timeoutError);
     } catch (e) {
-      debugPrint("Something went wrong: $e");
       throw AuthException(StringConstants.unknownError);
     }
   }

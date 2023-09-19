@@ -1,55 +1,46 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quick_flashcards/app/domain/usecases/flashcard_usecase/add_flashcard_usecase.dart';
+import 'package:quick_flashcards/app/domain/usecases/flashcard_usecase/create_flashcard_usecase.dart';
 
-import '../../../core/errors/exceptions.dart';
 import 'get_flashcards_provider.dart';
 
-enum AddFlashcardState { initial, loading, success, failed }
+enum CreateFlashcardState { initial, loading, success, failed }
 
-class AddFlashcardNotifier extends StateNotifier<AddFlashcardState> {
-  final AddFlashcardUsecase _usecase;
+class CreateFlashcardNotifier extends StateNotifier<CreateFlashcardState> {
+  final CreateFlashcardUsecase _usecase;
   final GetFlashcardsNotifier _getFlashcardNotifier;
 
-  AddFlashcardNotifier(
+  CreateFlashcardNotifier(
     this._usecase,
     this._getFlashcardNotifier,
-  ) : super(AddFlashcardState.initial);
+  ) : super(CreateFlashcardState.initial);
 
-  Future<String?> addFlashcard(
+  String? error;
+
+  Future<CreateFlashcardState> createFlashcard(
     String question,
     String answer,
     String color,
   ) async {
-    state = AddFlashcardState.loading; // begin the loading
+    state = CreateFlashcardState.loading;
     try {
-      await _usecase.execute(question, answer, color); // handle the req
-      state = AddFlashcardState.success; // req is successful
-      _getFlashcardNotifier.triggerRefresh(); // trigger refresh
-      return "flashcard_created";
-    } on AuthException catch (e) {
-      debugPrint("[CUBIT AUTH ERROR] ${e.message}");
-      state = AddFlashcardState.failed;
-      return e.message;
-    } on SocketException catch (e) {
-      debugPrint("[CUBIT SOCKET ERROR] ${e.message}");
-      state = AddFlashcardState.failed;
-      return e.message;
+      await _usecase.execute(question, answer, color);
+      state = CreateFlashcardState.success;
+      // trigger a refresh
+      _getFlashcardNotifier.triggerRefresh();
+      return state;
     } catch (e) {
-      debugPrint("[CUBIT UNKNOWN ERROR] ${e.toString()}");
-      state = AddFlashcardState.failed;
-      return e.toString();
+      state = CreateFlashcardState.failed;
+      error = e.toString();
+      return state;
     }
   }
 }
 
-// notifier provider
-final fcProvider =
-    StateNotifierProvider<AddFlashcardNotifier, AddFlashcardState>(
-  (ref) => AddFlashcardNotifier(
-    ref.watch(fcUsecase),
+final createFlashcardProvider =
+    StateNotifierProvider<CreateFlashcardNotifier, CreateFlashcardState>(
+  (ref) => CreateFlashcardNotifier(
+    ref.watch(createFlashcardUsecaseProvider),
+    // watch the get flashcards notifier for refresh trigger
     ref.watch(getFlashcardsProvider.notifier),
   ),
 );

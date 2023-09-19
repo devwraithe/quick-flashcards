@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:another_flushbar/flushbar.dart';
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,7 @@ import 'package:quick_flashcards/app/core/helpers/validators_helper.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
-import 'package:quick_flashcards/app/presentation/providers/auth_logic/sign_out_notifier.dart';
+import 'package:quick_flashcards/app/presentation/providers/auth_logic/logout_notifier.dart';
 import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_provider.dart';
 import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
@@ -89,7 +87,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: () => addFlashcard(),
+                          onTap: () => createFlashcardSheet(),
                           child: const Icon(
                             Icons.add,
                             size: 28,
@@ -128,7 +126,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   final notifier = ref.read(getFlashcardsProvider.notifier);
 
                   return Expanded(
-                    child: handleFlashcards(
+                    child: controlFlashcards(
                       state,
                       notifier,
                     ),
@@ -170,7 +168,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget handleFlashcards(
+  Widget controlFlashcards(
     GetFlashcardsState state,
     GetFlashcardsNotifier notifier,
   ) {
@@ -253,58 +251,49 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  final createFlashcardKey = GlobalKey<FormState>(
+    debugLabel: 'create-flashcard',
+  );
+
   final colors = [
     AppColors.cardGreen,
     AppColors.cardRed,
     AppColors.cardBlue,
     AppColors.cardYellow,
   ];
+
   Random random = Random();
 
   final _questionController = TextEditingController();
   final _answerController = TextEditingController();
 
-  _addFlashcard(context, ref) async {
-    FocusManager.instance.primaryFocus?.unfocus(); // Dismiss the keyboard
-
-    final state = ref.watch(fcProvider);
-    final notifier = ref.watch(fcProvider.notifier);
+  _createFlashcard(context, CreateFlashcardNotifier notifier) async {
+    // Dismiss the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
 
     int randomColor = random.nextInt(colors.length);
-
     Color randomItem = colors[randomColor];
 
-    final formState = _addFlashcardKey.currentState!;
+    final formState = createFlashcardKey.currentState!;
 
-    try {
-      if (formState.validate()) {
-        formState.save();
-        final result = await notifier.addFlashcard(
-          _questionController.text,
-          _answerController.text,
-          randomItem.toString(),
-        );
-        if (result != "flashcard_created") {
-          debugPrint("Unable to Add Flashcard: ${state.toString()}");
-          showFlushbar(
-            context: context,
-            flushbar: Flushbar(
-              title: "Unable to Add Flashcard",
-            ),
-          );
-        } else {
-          debugPrint("Flashcard Added!");
-          Navigator.pop(context, Routes.home);
-        }
+    if (formState.validate()) {
+      formState.save();
+      final result = await notifier.createFlashcard(
+        _questionController.text,
+        _answerController.text,
+        randomItem.toString(),
+      );
+      if (result == CreateFlashcardState.success) {
+        Navigator.pop(context, Routes.home);
       }
-    } catch (e) {
-      debugPrint("${StringConstants.unknownError}: ${e.toString()}");
+      if (result == CreateFlashcardState.failed) {
+        return UiHelpers.errorFlush(notifier.error!, context);
+      }
     }
   }
 
-  final _addFlashcardKey = GlobalKey<FormState>(debugLabel: 'add-flashcard');
-
-  void addFlashcard() {
+  // Bottom sheet for flashcard info fields
+  void createFlashcardSheet() {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -324,7 +313,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Form(
-              key: _addFlashcardKey,
+              key: createFlashcardKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -352,18 +341,21 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   const SizedBox(height: 32),
                   Consumer(
-                    builder: (context, ref, child) {
-                      final state = ref.watch(fcProvider);
+                    builder: (context, ref, _) {
+                      final state = ref.watch(createFlashcardProvider);
+                      final notifier = ref.watch(
+                        createFlashcardProvider.notifier,
+                      );
 
                       return FilledButton(
                         onPressed: () {
-                          _addFlashcard(context, ref);
+                          _createFlashcard(context, notifier);
 
                           // Clear data from the bottom sheet
                           _questionController.clear();
                           _answerController.clear();
                         },
-                        child: state == AddFlashcardState.loading
+                        child: state == CreateFlashcardState.loading
                             ? UiHelpers.darkLoader()
                             : Text(
                                 "Add",

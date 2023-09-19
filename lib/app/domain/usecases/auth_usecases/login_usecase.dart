@@ -4,11 +4,11 @@ import '../../../data/repository/auth_repository_impl.dart';
 import '../../repositories/auth_repository.dart';
 
 class LoginUsecase {
-  final AuthRepository _repo;
-  LoginUsecase(this._repo);
+  final AuthRepository _repository;
+  LoginUsecase(this._repository);
 
   Future<void> execute(Map<String, dynamic> data) async {
-    return await _repo.login(data);
+    return await _repository.login(data);
   }
 }
 

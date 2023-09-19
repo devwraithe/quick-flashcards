@@ -4,7 +4,7 @@ import 'package:quick_flashcards/app/presentation/screens/reset_password_screen.
 
 import '../../presentation/screens/home_screen.dart';
 import '../../presentation/screens/login_screen.dart';
-import '../../presentation/screens/sign_up_screen.dart';
+import '../../presentation/screens/register_screen.dart';
 
 final appRoutes = <String, WidgetBuilder>{
   Routes.signUp: (context) => const SignUpScreen(),

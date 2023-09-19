@@ -6,12 +6,12 @@ import 'package:quick_flashcards/app/core/errors/failure.dart';
 import '../../../data/repository/auth_repository_impl.dart';
 import '../../repositories/auth_repository.dart';
 
-class CreateAccountUsecase {
+class RegisterUsecase {
   final AuthRepository _repository;
-  CreateAccountUsecase(this._repository);
+  RegisterUsecase(this._repository);
 
   Future<Either<Failure, User?>> execute(Map<String, dynamic> data) async {
-    final response = await _repository.createAccountRepo(data);
+    final response = await _repository.register(data);
     return response.fold(
       (failure) => Left(failure),
       (user) => Right(user),
@@ -19,8 +19,10 @@ class CreateAccountUsecase {
   }
 }
 
-final createAccountUsecaseProvider = Provider<CreateAccountUsecase>(
-  (ref) => CreateAccountUsecase(
-    ref.watch(authRepoProvider),
+final registerUsecaseProvider = Provider<RegisterUsecase>(
+  (ref) => RegisterUsecase(
+    ref.watch(
+      authRepoProvider,
+    ),
   ),
 );

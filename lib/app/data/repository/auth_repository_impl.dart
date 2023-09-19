@@ -18,7 +18,7 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl(this._auth);
 
   @override
-  Future<Either<Failure, User?>> createAccountRepo(
+  Future<Either<Failure, User?>> register(
     Map<String, dynamic> data,
   ) async {
     try {

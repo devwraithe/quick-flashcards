@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     "password": "",
   };
 
-  // Show and Hide Password
+  // Show and hide password
   bool _obscureText = true;
   void _togglePassword() {
     setState(() => _obscureText = !_obscureText);

@@ -25,7 +25,7 @@ class CreateFlashcardNotifier extends StateNotifier<CreateFlashcardState> {
     try {
       await _usecase.execute(question, answer, color);
       state = CreateFlashcardState.success;
-      // trigger a refresh
+      // trigger a refresh when flashcard is created
       _getFlashcardNotifier.triggerRefresh();
       return state;
     } catch (e) {

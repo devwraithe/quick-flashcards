@@ -58,3 +58,24 @@ CardSwiper(
     },
   );
 ```
+
+## Flip Card Functionality
+Another package is used to achieve the flip card effect for displaying the answer to questions on the back of the card, two extra widgets are created to handle the front and back views respectively, these are the `FrontFlashcard` and `BackFlashcard` where the former handles the question part and the latter handles the answer part of the flashcard. The `FlipCard` widget also supports several parameters for controlling the effects of the card, for example, the `direction` parameter handles which direction the card should flip (either horizontal or vertical), and the `side` controls which side of the card to show first. Here is the code with explanation in the comments:
+```dart
+FlipCard(
+  fill: Fill.fillBack,
+  direction: FlipDirection.HORIZONTAL,
+  side: CardSide.BACK,
+  controller: _flipController,
+  front: FrontFlashcard(
+    card: card,
+    currentCard: index + 1,
+    totalCards: notifier.flashcardsList!.length,
+  ),
+  back: BackFlashcard(
+    card: card,
+    currentCard: index + 1,
+    totalCards: notifier.flashcardsList!.length,
+  ),
+);
+```

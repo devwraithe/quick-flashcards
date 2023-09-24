@@ -3,7 +3,13 @@
 
 🎨 [Design Inspiration](https://dribbble.com/shots/8258284-Flashcards-x-Tinder)
 
-## Previews
+## Table of Contents
+<!-- - [Getting Started](#getting-started) -->
+- [Preview](#preview)
+- [Swipeable Stacked Cards](#swipeable-stacked-cards)
+- [Flip Card Functionality](#flip-card-functionality)
+
+## Preview
 ### List of Flashcards
 https://github.com/devwraithe/quick-flashcards/assets/39105147/5178e723-69ad-4dc5-890c-2fc87df971a0
 

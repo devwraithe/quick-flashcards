@@ -1,17 +1,17 @@
 # 📑 Quick Flashcards
 
-**Quick Flashcards** is a Flutter mobile application designed for creating quick flashcards to store ideas. The application is focused on simplicity and simultaneously enhances the process of keeping track of ideas faster.
+**Quick Flashcards** is a simple, cross-platform mobile application designed for creating flashcards quickly. It's built using Google Firebase Firestore for the backend and database system for storing and retrieving the flashcards, and Riverpod for the state management.
 
 🎨 [Design Inspiration](https://dribbble.com/shots/8258284-Flashcards-x-Tinder)
 
 <!-- Table of Contents -->
 ### Table of Contents
-- [Getting Started](#getting-started)
+<!-- - [Getting Started](#getting-started) -->
 - [Previews](#previews)
 - [Folder Structure and Architecture](#folder-structure-and-architecture)
 
 <!-- Getting Started -->
-## Getting Started
+<!-- ## Getting Started
 
 ### Installation
 
@@ -42,11 +42,25 @@ To run and use the application, ensure you have either an emulator or a mobile d
 ```sh
 $ flutter run
 ```
+-->
 
 <!-- Previews i.e. Screenshots, Demo -->
 ## Previews
-- **Coming soon...**
+### List of Flashcards
+https://github.com/devwraithe/quick-flashcards/assets/39105147/5178e723-69ad-4dc5-890c-2fc87df971a0
 
 <!-- Folder Structure and Architecture -->
 ## Folder Structure and Architecture
 - **Coming soon...**
+
+<!-- Stacked Cards Functionality -->
+## Stacked Cards
+Swipeable stacked cards functionality was achieved by using the [flutter_card_swiper](https://pub.dev/packages/flutter_card_swiper) package. The package is very verbose and has a lot of customizations such as the number of cards displayed at once, card offsetting, and scaling, it also allows the option to either allow swiping horizontally, vertically or both. Here is the code used in this project with explanatory comments:
+
+**Implementation:**
+```dart
+/// This widget handles the swipeable stacked cards functionality
+CardSwiperr(
+  cardsCount: notifier.flashcardsList!.length
+)
+```

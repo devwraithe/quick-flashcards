@@ -1,5 +1,5 @@
 # 📑 Quick Flashcards
-**Quick Flashcards** is a mobile app I've designed for creating flashcards with ease. I've harnessed the power of Google Firebase Firestore to handle the backend seamlessly, and Riverpod helps to manage the app's state effortlessly. 
+**Quick Flashcards** is a mobile app I've designed for creating flashcards with ease. I've harnessed the power of Google Firebase Firestore to handle the backend seamlessly, and Riverpod helps to manage the app's state effortlessly. The app implements a clean architecture that separates the Presentation, Domain and Data layers with a layer-first approach folder structure.
 
 🎨 [Design Inspiration](https://dribbble.com/shots/8258284-Flashcards-x-Tinder)
 

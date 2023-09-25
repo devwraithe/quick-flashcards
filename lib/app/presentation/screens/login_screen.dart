@@ -7,7 +7,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/text_theme.dart';
 import '../../core/utilities/helpers/ui_helper.dart';
 import '../../core/utilities/helpers/validators_helper.dart';
-import '../providers/auth_logic/login_notifier.dart';
+import '../notifiers/auth_notifiers/login_notifier.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -85,9 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         prefix: Constants.prefixSpace,
                       ),
                       autovalidateMode: Constants.validateMode,
+                      style: textTheme.bodyLarge,
                       validator: (v) => ValidatorHelper.email(v),
                       onSaved: (v) => data['email'] = v!,
-                      style: textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 18),
                     TextFormField(

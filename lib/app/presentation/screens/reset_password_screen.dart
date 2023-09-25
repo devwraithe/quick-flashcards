@@ -7,7 +7,7 @@ import '../../core/theme/text_theme.dart';
 import '../../core/utilities/constants/constants.dart';
 import '../../core/utilities/helpers/ui_helper.dart';
 import '../../core/utilities/helpers/validators_helper.dart';
-import '../providers/auth_logic/reset_password_notifier.dart';
+import '../notifiers/auth_notifiers/reset_password_notifier.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -19,7 +19,7 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
 
-  final _key = GlobalKey<FormState>(debugLabel: 'reset_password');
+  final _key = GlobalKey<FormState>(debugLabel: 'reset-password');
 
   _submit(context, ResetPasswordNotifier notifier) async {
     // Dismiss the keyboard
@@ -93,8 +93,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     Consumer(
                       builder: (context, ref, _) {
                         final state = ref.watch(resetPasswordProvider);
-                        final notifier =
-                            ref.watch(resetPasswordProvider.notifier);
+                        final notifier = ref.watch(
+                          resetPasswordProvider.notifier,
+                        );
 
                         return FilledButton(
                           onPressed: () => _submit(context, notifier),

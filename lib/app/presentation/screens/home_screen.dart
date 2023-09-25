@@ -8,15 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
-import 'package:quick_flashcards/app/presentation/providers/auth_logic/logout_notifier.dart';
-import 'package:quick_flashcards/app/presentation/providers/flashcards_logic/get_flashcards_notifier.dart';
-import 'package:quick_flashcards/app/presentation/widgets/app_textfield_widget.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 
 import '../../core/utilities/constants/constants.dart';
 import '../../core/utilities/helpers/ui_helper.dart';
 import '../../core/utilities/helpers/validators_helper.dart';
-import '../providers/flashcards_logic/add_flashcard_notifier.dart';
+import '../notifiers/auth_notifiers/logout_notifier.dart';
+import '../notifiers/flashcard_notifiers/add_flashcard_notifier.dart';
+import '../notifiers/flashcard_notifiers/get_flashcards_notifier.dart';
 import '../widgets/back_flashcard.dart';
 import '../widgets/custom_icon.dart';
 import '../widgets/front_flashcard.dart';
@@ -51,7 +50,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         context,
         Routes.signIn,
       );
-    } else if (result == LogoutState.failed) {
+    }
+    if (result == LogoutState.failed) {
       UiHelpers.errorFlush(
         notifier.error!,
         context,
@@ -98,9 +98,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                         Consumer(
                           builder: (context, ref, _) {
                             final state = ref.watch(logoutProvider);
-                            final notifier = ref.watch(
-                              logoutProvider.notifier,
-                            );
+                            final notifier = ref.watch(logoutProvider.notifier);
 
                             return GestureDetector(
                               onTap: () => _signOut(context, notifier),
@@ -289,6 +287,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       if (result == CreateFlashcardState.failed) {
         return UiHelpers.errorFlush(notifier.error!, context);
       }
+
+      // Clear data from the bottom sheet
+      _questionController.clear();
+      _answerController.clear();
     }
   }
 
@@ -303,6 +305,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       builder: (context) {
+        const textTheme = AppTextTheme.textTheme;
+
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: 18,
@@ -326,18 +330,30 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     width: 80,
                   ),
                   const SizedBox(height: 32),
-                  AppTextFieldWidget(
-                    hintText: "Question e.g Who am I?",
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: "Question e.g Who am I?",
+                      prefix: Constants.prefixSpace,
+                    ),
+                    autovalidateMode: Constants.validateMode,
                     controller: _questionController,
                     validator: (v) => ValidatorHelper.question(v),
                     onSaved: (v) => _questionController.text = v!,
+                    style: textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 20),
-                  AppTextFieldWidget(
-                    hintText: "Answer e.g I am Devwraithe",
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: "Answer e.g I am Devwraithe",
+                      prefix: Constants.prefixSpace,
+                    ),
+                    autovalidateMode: Constants.validateMode,
                     controller: _answerController,
                     validator: (v) => ValidatorHelper.answer(v),
                     onSaved: (v) => _answerController.text = v!,
+                    style: textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 32),
                   Consumer(
@@ -350,21 +366,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                       return FilledButton(
                         onPressed: () {
                           _createFlashcard(context, notifier);
-
-                          // Clear data from the bottom sheet
-                          _questionController.clear();
-                          _answerController.clear();
                         },
                         child: state == CreateFlashcardState.loading
                             ? UiHelpers.darkLoader()
-                            : Text(
-                                "Add",
-                                style:
-                                    AppTextTheme.textTheme.bodyLarge?.copyWith(
-                                  color: AppColors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                            : const Text("Add"),
                       );
                     },
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quick_flashcards/app/core/theme/text_theme.dart';
 
 import '../../core/theme/app_colors.dart';
 
@@ -14,7 +15,7 @@ class CardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    const textTheme = AppTextTheme.textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +26,6 @@ class CardContent extends StatelessWidget {
             Text(
               title,
               style: textTheme.titleMedium?.copyWith(
-                color: AppColors.white,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -42,7 +42,6 @@ class CardContent extends StatelessWidget {
         Text(
           value,
           style: textTheme.headlineSmall?.copyWith(
-            color: AppColors.white,
             fontWeight: FontWeight.w700,
             height: 1.4,
             fontSize: 26,

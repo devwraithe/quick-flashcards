@@ -43,7 +43,7 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
     } on TimeoutException catch (_) {
       throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(Constants.unknownError);
+      throw ServerException(Constants.unknownError);
     }
   }
 

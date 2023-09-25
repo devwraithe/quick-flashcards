@@ -7,7 +7,7 @@ import '../../core/theme/text_theme.dart';
 import '../../core/utilities/constants/constants.dart';
 import '../../core/utilities/helpers/ui_helper.dart';
 import '../../core/utilities/helpers/validators_helper.dart';
-import '../providers/auth_logic/register_notifier.dart';
+import '../notifiers/auth_notifiers/register_notifier.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

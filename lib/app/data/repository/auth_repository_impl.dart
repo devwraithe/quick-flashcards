@@ -34,6 +34,8 @@ class AuthRepositoryImpl implements AuthRepository {
         throw ServerException("Password must be more than 6 characters");
       } else if (e.code == 'invalid-email') {
         throw ServerException("An invalid email address was provided");
+      } else if (e.code == "network-request-failed") {
+        throw ConnectionException(Constants.socketError);
       } else {
         throw ServerException(Constants.unknownError);
       }
@@ -54,19 +56,22 @@ class AuthRepositoryImpl implements AuthRepository {
         password: data['password'],
       );
     } on FirebaseAuthException catch (e) {
+      print("ERROR: ${e.code}");
       if (e.code == 'user-not-found') {
-        throw AuthException("No user found for this email");
+        throw ServerException("No user found for this email");
       } else if (e.code == 'wrong-password') {
-        throw AuthException("You have entered an incorrect password");
+        throw ServerException("You have entered an incorrect password");
       } else if (e.code == 'invalid-email') {
-        throw AuthException("You provided an invalid email address");
+        throw ServerException("You provided an invalid email address");
+      } else if (e.code == "network-request-failed") {
+        throw ConnectionException(Constants.socketError);
       }
     } on SocketException catch (e) {
       throw ConnectionException(Constants.socketError);
-    } on TimeoutException catch (_) {
+    } on TimeoutException catch (e) {
       throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(Constants.unknownError);
+      throw ServerException(Constants.unknownError);
     }
   }
 
@@ -77,18 +82,18 @@ class AuthRepositoryImpl implements AuthRepository {
         email: email,
       );
     } on FirebaseAuthException catch (e) {
-      debugPrint("AuthException: $e");
+      debugPrint("ServerException: $e");
       if (e.code == 'user-not-found') {
-        throw AuthException("No user found for this email");
+        throw ServerException("No user found for this email");
       } else if (e.code == 'invalid-email') {
-        throw AuthException("You provided an invalid email address");
+        throw ServerException("You provided an invalid email address");
       }
     } on SocketException catch (_) {
       throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
       throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(Constants.unknownError);
+      throw ServerException(Constants.unknownError);
     }
   }
 
@@ -97,13 +102,13 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _auth.signOut();
     } on FirebaseAuthException catch (e) {
-      throw AuthException("No user found for this email");
+      throw ServerException("No user found for this email");
     } on SocketException catch (e) {
       throw ConnectionException(Constants.socketError);
     } on TimeoutException catch (_) {
       throw ConnectionException(Constants.timeoutError);
     } catch (e) {
-      throw AuthException(Constants.unknownError);
+      throw ServerException(Constants.unknownError);
     }
   }
 

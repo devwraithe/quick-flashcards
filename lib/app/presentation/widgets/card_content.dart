@@ -27,6 +27,7 @@ class CardContent extends StatelessWidget {
               title,
               style: textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
+                decoration: TextDecoration.none,
               ),
             ),
             Text(
@@ -34,6 +35,7 @@ class CardContent extends StatelessWidget {
               style: textTheme.titleMedium?.copyWith(
                 color: AppColors.grey,
                 fontWeight: FontWeight.w600,
+                decoration: TextDecoration.none,
               ),
             ),
           ],
@@ -45,6 +47,7 @@ class CardContent extends StatelessWidget {
             fontWeight: FontWeight.w700,
             height: 1.4,
             fontSize: 26,
+            decoration: TextDecoration.none,
           ),
         ),
         const Spacer(),
@@ -53,6 +56,7 @@ class CardContent extends StatelessWidget {
           style: textTheme.titleMedium?.copyWith(
             color: AppColors.grey,
             fontWeight: FontWeight.w600,
+            decoration: TextDecoration.none,
           ),
         ),
       ],

@@ -75,6 +75,27 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
       throw ServerException(e.toString());
     }
   }
+
+  @override
+  Future<void> deleteCard(String flashcardId) async {
+    final flashcardCollection =
+        FirebaseConstants.firestore.collection("flashcards");
+    try {
+      final flashcardDocument = flashcardCollection.doc(flashcardId);
+
+      await flashcardDocument.delete().then((value) {
+        debugPrint("Flashcard deleted successfully");
+      }).catchError((err) {
+        debugPrint("Error deleting flashcard: $err");
+      });
+    } on SocketException catch (_) {
+      throw ConnectionException(Constants.socketError);
+    } on TimeoutException catch (_) {
+      throw ConnectionException(Constants.timeoutError);
+    } catch (e) {
+      throw ServerException(Constants.unknownError);
+    }
+  }
 }
 
 final flashcardRepoProvider = Provider<FlashcardRepository>(

@@ -5,9 +5,11 @@ import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:quick_flashcards/app/core/routes/routes.dart';
 import 'package:quick_flashcards/app/core/theme/app_colors.dart';
 import 'package:quick_flashcards/app/core/theme/text_theme.dart';
+import 'package:quick_flashcards/app/presentation/screens/info_screen.dart';
 import 'package:quick_flashcards/app/presentation/widgets/custom_sub_icon.dart';
 
 import '../../core/utilities/constants/constants.dart';
@@ -15,6 +17,7 @@ import '../../core/utilities/helpers/ui_helper.dart';
 import '../../core/utilities/helpers/validators_helper.dart';
 import '../notifiers/auth_notifiers/logout_notifier.dart';
 import '../notifiers/flashcard_notifiers/add_flashcard_notifier.dart';
+import '../notifiers/flashcard_notifiers/delete_card_notifier.dart';
 import '../notifiers/flashcard_notifiers/get_flashcards_notifier.dart';
 import '../widgets/back_flashcard.dart';
 import '../widgets/custom_icon.dart';
@@ -117,27 +120,40 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
               Consumer(
                 builder: (context, ref, _) {
                   final state = ref.watch(getFlashcardsProvider);
                   final notifier = ref.read(getFlashcardsProvider.notifier);
 
                   return Expanded(
-                    child: controlFlashcards(
-                      state,
-                      notifier,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height / 12,
+                      ),
+                      child: controlFlashcards(
+                        state,
+                        notifier,
+                      ),
                     ),
                   );
                 },
               ),
-              const SizedBox(height: 32),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CustomSubIcon(
-                    icon: Icons.arrow_back_rounded,
-                    onTap: () => _swiperController.swipeLeft(),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final state = ref.watch(deleteCardProvider);
+                      final notifier = ref.watch(
+                        deleteCardProvider.notifier,
+                      );
+
+                      return CustomSubIcon(
+                        icon: Iconsax.trash,
+                        onTap: () => _deleteCard(context, notifier, cardId!),
+                      );
+                    },
                   ),
                   CustomIcon(
                     icon: Icons.close,
@@ -154,7 +170,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     onTap: () => _swiperController.swipeRight(),
                   ),
                   CustomSubIcon(
-                    icon: Icons.arrow_forward_rounded,
+                    icon: Iconsax.edit,
                     onTap: () => _swiperController.swipeRight(),
                   ),
                 ],
@@ -165,6 +181,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
+  String? cardId;
 
   Widget controlFlashcards(
     GetFlashcardsState state,
@@ -226,15 +244,31 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         cardBuilder: (context, index) {
           final card = notifier.flashcardsList![index];
 
+          cardId = card.id;
+          debugPrint(cardId);
+
           return FlipCard(
             fill: Fill.fillBack,
             direction: FlipDirection.HORIZONTAL,
             side: CardSide.FRONT,
             controller: _flipController,
-            front: FrontFlashcard(
-              card: card,
-              currentCard: index + 1,
-              totalCards: notifier.flashcardsList!.length,
+            front: GestureDetector(
+              onLongPress: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => InfoScreen(
+                    card: card,
+                  ),
+                ),
+              ),
+              child: Hero(
+                tag: card.id,
+                child: FrontFlashcard(
+                  card: card,
+                  currentCard: index + 1,
+                  totalCards: notifier.flashcardsList!.length,
+                ),
+              ),
             ),
             back: BackFlashcard(
               card: card,
@@ -380,5 +414,18 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         );
       },
     );
+  }
+
+  _deleteCard(context, DeleteCardNotifier notifier, String cardId) async {
+    // Dismiss the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final result = await notifier.deleteCard(cardId);
+    if (result == DeleteCardState.success) {
+      // Navigator.pop(context, Routes.home);
+    }
+    if (result == DeleteCardState.failed) {
+      return UiHelpers.errorFlush(notifier.error!, context);
+    }
   }
 }

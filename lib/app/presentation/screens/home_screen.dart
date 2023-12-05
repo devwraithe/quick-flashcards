@@ -142,18 +142,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Consumer(
-                    builder: (context, ref, _) {
-                      final state = ref.watch(deleteCardProvider);
-                      final notifier = ref.watch(
-                        deleteCardProvider.notifier,
-                      );
-
-                      return CustomSubIcon(
-                        icon: Iconsax.trash,
-                        onTap: () => _deleteCard(context, notifier, cardId!),
-                      );
-                    },
+                  CustomSubIcon(
+                    icon: Iconsax.trash,
+                    onTap: () => _deleteCardSheet(),
                   ),
                   CustomIcon(
                     icon: Icons.close,
@@ -416,13 +407,82 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  _deleteCardSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      showDragHandle: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(18),
+        ),
+      ),
+      builder: (context) {
+        const text = AppTextTheme.textTheme;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(18, 0, 18, 26),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "Are you certain you would like to delete this card? This action is irreversible",
+                  textAlign: TextAlign.center,
+                  style: text.headlineSmall?.copyWith(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w500,
+                    height: 1.42,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 26),
+              Row(
+                children: [
+                  Expanded(
+                    child: Consumer(
+                      builder: (context, ref, _) {
+                        final state = ref.watch(deleteCardProvider);
+                        final notifier = ref.watch(
+                          deleteCardProvider.notifier,
+                        );
+
+                        return FilledButton(
+                          onPressed: () => _deleteCard(
+                            context,
+                            notifier,
+                            cardId!,
+                          ),
+                          child: state == DeleteCardState.loading
+                              ? UiHelpers.darkLoader()
+                              : const Text("Yes, delete"),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 18),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("No, cancel"),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   _deleteCard(context, DeleteCardNotifier notifier, String cardId) async {
     // Dismiss the keyboard
     FocusManager.instance.primaryFocus?.unfocus();
 
     final result = await notifier.deleteCard(cardId);
     if (result == DeleteCardState.success) {
-      // Navigator.pop(context, Routes.home);
+      Navigator.pop(context);
     }
     if (result == DeleteCardState.failed) {
       return UiHelpers.errorFlush(notifier.error!, context);

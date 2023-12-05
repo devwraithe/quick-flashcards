@@ -9,6 +9,9 @@ class AppButtonTheme {
   static final filledButtonTheme = FilledButtonThemeData(
     style: AppButtonTheme.darkThemeFilledButton,
   );
+  static final outlinedButtonTheme = OutlinedButtonThemeData(
+    style: AppButtonTheme.darkThemeOutlinedButton,
+  );
 
   static final darkThemeFilledButton = FilledButton.styleFrom(
     shape: RoundedRectangleBorder(
@@ -20,6 +23,26 @@ class AppButtonTheme {
       fontWeight: FontWeight.w500,
     ),
     backgroundColor: AppColors.white,
+    side: const BorderSide(
+      color: AppColors.white,
+      width: 1.24,
+    ),
+    minimumSize: const Size(double.infinity, 55),
+  );
+
+  static final darkThemeOutlinedButton = OutlinedButton.styleFrom(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(Constants.inputRadius),
+    ),
+    textStyle: AppTextTheme.textTheme.titleLarge?.copyWith(
+      fontFamily: Constants.fontFamily,
+      color: AppColors.white,
+      fontWeight: FontWeight.w500,
+    ),
+    side: const BorderSide(
+      color: AppColors.white,
+      width: 1.24,
+    ),
     minimumSize: const Size(double.infinity, 55),
   );
 }

@@ -12,6 +12,7 @@ class AppTheme {
     colorScheme: AppColorScheme.darkColorScheme,
     scaffoldBackgroundColor: AppColorScheme.darkColorScheme.background,
     filledButtonTheme: AppButtonTheme.filledButtonTheme,
+    outlinedButtonTheme: AppButtonTheme.outlinedButtonTheme,
     textTheme: AppTextTheme.textTheme,
     inputDecorationTheme: AppInputDecorationTheme.inputDecoration,
   );
